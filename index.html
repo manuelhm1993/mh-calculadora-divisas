@@ -12,24 +12,24 @@
 </head>
 <body>
     <main id="main">
-        <h1 class="text-center text-uppercase">Calculadora de divisas</h1>
+        <h1 class="text-center text-uppercase mt-3">Calculadora de divisas</h1>
 
-        <div class="card text-center mx-auto mt-3 text-white bg-primary bg-gradient" style="width: 40%;">
+        <div class="card text-center mx-auto mt-3 text-white bg-primary bg-gradient">
             <div class="card-header">
                 <h2 class="card-title h5 text-uppercase text-dark">Datos de entrada</h2>
             </div>
             <div class="card-body">
                 <form id="calculadora">
                     <div class="mb-3">
-                        <input type="number" class="form-control" name="bcv" id="bcv" min="0" step="0.01" placeholder="Ingrese la tasa BCV" required>
+                        <input type="number" class="form-control" name="bcv" id="bcv" min="0" step="0.01" placeholder="Tasa BCV" required>
                     </div>
 
                     <div class="mb-3"></label>
-                        <input type="number" class="form-control" name="paralelo" id="paralelo" min="0" step="0.01" placeholder="Ingrese la tasa paralelo" required>
+                        <input type="number" class="form-control" name="paralelo" id="paralelo" min="0" step="0.01" placeholder="Tasa paralelo" required>
                     </div>
 
                     <div class="mb-3"></label>
-                        <input type="number" class="form-control" name="monto" id="monto" min="0" step="0.01" placeholder="Ingrese el monto" required>
+                        <input type="number" class="form-control" name="monto" id="monto" min="0" step="0.01" placeholder="Monto en $" required>
                     </div>
 
                     <div class="d-grid gap-2">
@@ -41,7 +41,7 @@
         </div>
 
         <section id="resultado" class="container d-none">
-            <span class="border-top border-dark w-100 d-block mt-5"></span>
+            <span class="border-top border-dark w-100 d-block mt-3"></span>
 
             <h2 class="h4 text-uppercase text-center text-dark mt-3 fw-bold">Resultado</h2>
 
@@ -59,7 +59,7 @@
                             <th>Total pagado en $</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-secondary bg-gradient text-white">
+                    <tbody class="bg-secondary bg-gradient text-white text-center">
                         <tr>
                             <td>120</td>
                             <td>68.31</td>
