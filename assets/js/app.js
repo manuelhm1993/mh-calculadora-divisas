@@ -60,22 +60,22 @@ const printResultForRSM = (values, locale, options) => {
         </div>
 
         <div class="d-flex w-100 justify-content-between">
-            <p class="mb-1 fw-bold text-uppercase fs-6">Tasa Bs BCV</p>
+            <p class="mb-1 fw-bold text-uppercase fs-6">BCV</p>
             <small class="fs-6">${transformToMoney(values.bcv, locale, options)}</small>
         </div>
 
         <div class="d-flex w-100 justify-content-between">
-            <p class="mb-1 fw-bold text-uppercase fs-6">Tasa Bs Paralelo</p>
+            <p class="mb-1 fw-bold text-uppercase fs-6">Paralelo</p>
             <small class="fs-6">${transformToMoney(values.paralelo, locale, options)}</small>
         </div>
 
         <div class="d-flex w-100 justify-content-between">
-            <p class="mb-1 fw-bold text-uppercase fs-6">Bs BCV</p>
+            <p class="mb-1 fw-bold text-uppercase fs-6">Total BCV</p>
             <small class="fs-6">${transformToMoney(results.bs_bcv, locale, options)}</small>
         </div>
 
         <div class="d-flex w-100 justify-content-between">
-            <p class="mb-1 fw-bold text-uppercase fs-6">Bs Paralelo</p>
+            <p class="mb-1 fw-bold text-uppercase fs-6">Total Paralelo</p>
             <small class="fs-6">${transformToMoney(results.bs_paralelo, locale, options)}</small>
         </div>
 
@@ -117,10 +117,6 @@ const reset = (screenWidth, caller = 'resetear') => {
     calculadora['bcv'].focus();
 };
 
-window.addEventListener("resize", (e) => {
-    location.reload();
-});
-
 document.addEventListener('reset', (e) => {
     e.preventDefault();
 
@@ -156,3 +152,8 @@ document.addEventListener('submit', (e) => {
         reset(screenWidth, calculadora.id);
     }
 });
+
+//TODO: solventar el bug al redimensionar
+/*window.addEventListener("resize", (e) => {
+    location.reload();
+});*/
