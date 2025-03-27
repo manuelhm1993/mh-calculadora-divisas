@@ -7,10 +7,17 @@ const transformToMoney = (number, locale = "es-ve", options = { style: "currency
     return new Intl.NumberFormat(locale, options).format(number);
 };
 
-const reset = () => {
+const reset = (caller = 'resetear') => {
     calculadora['bcv'].value = '';
     calculadora['paralelo'].value = '';
     calculadora['monto'].value = '';
+
+    const display = (caller == 'resetear') ? 'none' : 'block';
+
+    resultado.style.display = display;
+    separador.style.display = display;
+
+    calculadora['bcv'].focus();
 };
 
 document.addEventListener('reset', (e) => {
@@ -18,8 +25,6 @@ document.addEventListener('reset', (e) => {
 
     if(e.target.id == calculadora.id) {
         reset();
-        resultado.style.display = 'none';
-        separador.style.display = 'none';
     }
 });
 
@@ -27,30 +32,34 @@ document.addEventListener('submit', (e) => {
     e.preventDefault();
 
     if(e.target.id == calculadora.id) {
+        //Capturar el valor de los campos
         const bcv = calculadora['bcv'].value;
         const paralelo = calculadora['paralelo'].value;
         const monto = calculadora['monto'].value;
+
+        //Realizar los cálculos
         let bs_bcv = monto * bcv; 
         let bs_paralelo = monto * paralelo;
+        let diff_bs = bs_paralelo - bs_bcv;
+        let diff_usd = (paralelo > 0) ? diff_bs / paralelo : 0;
 
+        //Definir el formato moneda
         const locale = 'en-US';
         const options = { style: "currency", currency: "USD", maximumFractionDigits: 2 };
 
+        //Cargar los datos en el reporte
         tr.innerHTML = '';
         tr.innerHTML = `
-        <td>${transformToMoney(monto, locale, options)}</td>
-        <td>${transformToMoney(bcv)}</td>
-        <td>${transformToMoney(paralelo)}</td>
-        <td>${transformToMoney(bs_bcv)}</td>
-        <td>${transformToMoney(bs_paralelo)}</td>
-        <td>${transformToMoney((bs_paralelo - bs_bcv))}</td>
-        <td>${transformToMoney(((bs_paralelo - bs_bcv) / paralelo), locale, options)}</td>
-        <td>${transformToMoney((monto - ((bs_paralelo - bs_bcv) / paralelo)), locale, options)}</td>
+            <td>${transformToMoney(monto, locale, options)}</td>
+            <td>${transformToMoney(bcv)}</td>
+            <td>${transformToMoney(paralelo)}</td>
+            <td>${transformToMoney(bs_bcv)}</td>
+            <td>${transformToMoney(bs_paralelo)}</td>
+            <td>${transformToMoney(diff_bs)}</td>
+            <td>${transformToMoney(diff_usd, locale, options)}</td>
+            <td>${transformToMoney((monto - diff_usd), locale, options)}</td>
         `;
 
-        resultado.style.display = 'block';
-        separador.style.display = 'block';
-
-        reset();
+        reset(calculadora.id);
     }
 });
