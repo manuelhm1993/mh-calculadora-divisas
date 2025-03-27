@@ -1,6 +1,5 @@
 const resultado = document.querySelector('#resultado');
 const tr = document.querySelector('#resultado table tbody tr');
-const separador = document.querySelector('.separador');
 const calculadora = document.querySelector('#calculadora');
 
 const transformToMoney = (number, locale = "es-ve", options = { style: "currency", currency: "VES", maximumFractionDigits: 2 }) => {
@@ -12,10 +11,12 @@ const reset = (caller = 'resetear') => {
     calculadora['paralelo'].value = '';
     calculadora['monto'].value = '';
 
-    const display = (caller == 'resetear') ? 'none' : 'block';
-
-    resultado.style.display = display;
-    separador.style.display = display;
+    if(caller == 'resetear') {
+        resultado.classList.add('d-none');
+    }
+    else {
+        resultado.classList.remove('d-none');
+    }
 
     calculadora['bcv'].focus();
 };

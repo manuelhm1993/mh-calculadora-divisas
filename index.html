@@ -5,40 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="shortcut icon" href="./assets/img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="./assets/bootstrap-5.0.2-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="./assets/css/app.css">
+
     <title>Calculadora de divisas MH</title>
 </head>
 <body>
     <main id="main">
-        <h1>Calculadora de divisas</h1>
+        <h1 class="text-center text-uppercase">Calculadora de divisas</h1>
 
-        <form id="calculadora">
-            <div class="form-item">
-                <label for="bcv">Tasa BCV:</label>
-                <input type="number" name="bcv" id="bcv" min="0" step="0.01" placeholder="Ingrese la tasa BCV" required>
+        <div class="card text-center mx-auto mt-3 text-white bg-primary bg-gradient" style="width: 40%;">
+            <div class="card-header">
+                <h2 class="card-title h5 text-uppercase text-dark">Datos de entrada</h2>
             </div>
-            <div class="form-item">
-                <label for="paralelo">Tasa paralelo:</label>
-                <input type="number" name="paralelo" id="paralelo" min="0" step="0.01" placeholder="Ingrese la tasa paralelo" required>
-            </div>
-            <div class="form-item">
-                <label for="monto">Monto:</label>
-                <input type="number" name="monto" id="monto" min="0" step="0.01" placeholder="Ingrese el monto" required>
-            </div>
-            <div class="flex">
-                <input type="submit" value="Calcular" id="calcular">
-                <input type="reset" value="Resetear" id="resetear">
-            </div>
-        </form>
+            <div class="card-body">
+                <form id="calculadora">
+                    <div class="mb-3">
+                        <input type="number" class="form-control" name="bcv" id="bcv" min="0" step="0.01" placeholder="Ingrese la tasa BCV" required>
+                    </div>
 
-        <div class="separador"></div>
+                    <div class="mb-3"></label>
+                        <input type="number" class="form-control" name="paralelo" id="paralelo" min="0" step="0.01" placeholder="Ingrese la tasa paralelo" required>
+                    </div>
 
-        <section id="resultado">
-            <h2>Resultado</h2>
+                    <div class="mb-3"></label>
+                        <input type="number" class="form-control" name="monto" id="monto" min="0" step="0.01" placeholder="Ingrese el monto" required>
+                    </div>
 
-            <table>
+                    <div class="d-grid gap-2">
+                        <input type="submit" value="Calcular" id="calcular" class="text-uppercase btn btn-dark btn-sm">
+                        <input type="reset" value="Resetear" id="resetear" class="text-uppercase btn btn-dark btn-sm">
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <section id="resultado" class="container d-none">
+            <span class="border-top border-dark w-100 d-block mt-5"></span>
+
+            <h2 class="h4 text-uppercase text-center text-dark mt-3 fw-bold">Resultado</h2>
+
+            <table class="table">
                 <thead>
-                    <tr>
+                    <tr class="bg-dark bg-gradient text-white">
                         <th>Monto $</th>
                         <th>Tasa Bs BCV</th>
                         <th>Tasa Bs Paralelo</th>
@@ -49,7 +58,7 @@
                         <th>Total pagado en $</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="bg-secondary bg-gradient">
                     <tr>
                         <td>120</td>
                         <td>68.31</td>
@@ -65,6 +74,7 @@
         </section>
     </mai>
 
+    <script src="./assets/bootstrap-5.0.2-dist/js/bootstrap.bundle.min.js"></script>
     <script src="./assets/js/app.js"></script>
 </body>
 </html>

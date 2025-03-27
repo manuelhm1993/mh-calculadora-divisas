@@ -1,102 +1,12 @@
 body {
-    margin: 0;
-    padding: 0;
     background: rgb(225, 224, 224);
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-}
-
-#main h1 {
-    text-align: center;
-    text-transform: uppercase;
-}
-
-.form-item {
-    margin-bottom: 10px;
-}
-
-#calculadora {
-    width: 40%;
-    margin: 20px auto 0 auto;
-    padding: 20px;
-    border: 1px solid #000;
-    background: rgb(37, 139, 241);
-}
-
-#calculadora label {
-    text-transform: uppercase;
-    font-weight: 600;
-}
-
-::placeholder {
-    color: #000;
-}
-
-#calculadora input {
-    width: 100%;
-    box-sizing: border-box;
-    background: rgb(228, 228, 228);
-    color: #000;
-    border: none;
-}
-
-#calculadora .flex {
-    display: flex;
 }
 
 #calculadora #calcular, #calculadora #resetear {
-    text-transform: uppercase;
     letter-spacing: 2px;
-    background: #000;
-    color: #fff;
-    cursor: pointer;
-}
-
-#calculadora #calcular{
-    margin-right: 10px;
-}
-
-#resultado {
-    display: none;
-}
-
-.separador {
-    display: none;
-    border: 1px solid #000;
-    margin: 20px 0;
-}
-
-#resultado h2 {
-    text-align: center;
-    text-transform: uppercase;
-}
-
-#resultado table, th, td {
-    border: 1px solid;
-}
-
-#resultado table {
-    width: 70%;
-    margin: 0 auto;
-    text-align: center;
-    padding: 20px;
-    border-collapse: collapse;
-}
-
-#resultado table thead {
-    background: #000;
-    color: #fff;
-}
-
-#resultado table tbody {
-    background: rgb(189, 184, 184);
 }
 
 #resultado table th {
     text-transform: uppercase;
-}
-
-@media only screen and (max-width: 600px) {
-    #calculadora .flex {
-        display: block;
-    }
+    font-size: 0.9rem;
 }
