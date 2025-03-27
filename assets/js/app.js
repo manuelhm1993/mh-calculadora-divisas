@@ -117,6 +117,10 @@ const reset = (screenWidth, caller = 'resetear') => {
     calculadora['bcv'].focus();
 };
 
+window.addEventListener("resize", (e) => {
+    location.reload();
+});
+
 document.addEventListener('reset', (e) => {
     e.preventDefault();
 
