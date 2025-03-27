@@ -17,7 +17,7 @@ document.addEventListener('reset', (e) => {
     e.preventDefault();
 
     if(e.target.id == calculadora.id) {
-        calculadora.reset();
+        reset();
         resultado.style.display = 'none';
         separador.style.display = 'none';
     }
