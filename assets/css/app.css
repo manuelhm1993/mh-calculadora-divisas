@@ -20,3 +20,15 @@ body {
         width: 50%;
     }
 }
+
+@media only screen and (max-width: 900px) {
+    .mh-card-sm {
+        width: 70%;
+    }
+}
+
+@media only screen and (max-width: 1900px) {
+    .mh-card-sm {
+        width: 55%;
+    }
+}
