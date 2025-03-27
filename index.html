@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="app.css">
+</head>
+<body>
+    <main id="main">
+        <h1>Calculadora de divisas</h1>
+
+        <form id="calculadora">
+            <div class="form-item">
+                <label for="bcv">Tasa BCV:</label>
+                <input type="number" name="bcv" id="bcv" min="0" step="0.01" placeholder="Ingrese la tasa BCV">
+            </div>
+            <div class="form-item">
+                <label for="paralelo">Tasa paralelo:</label>
+                <input type="number" name="paralelo" id="paralelo" min="0" step="0.01" placeholder="Ingrese la tasa paralelo">
+            </div>
+            <div class="form-item">
+                <label for="monto">Monto:</label>
+                <input type="number" name="monto" id="monto" min="0" step="0.01" placeholder="Ingrese el monto">
+            </div>
+            <div class="flex">
+                <input type="submit" value="Calcular" id="calcular">
+                <input type="reset" value="Resetear" id="resetear">
+            </div>
+        </form>
+
+        <div class="separador"></div>
+
+        <section id="resultado">
+            <h2>Resultado</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Monto $</th>
+                        <th>Tasa Bs BCV</th>
+                        <th>Tasa Bs Paralelo</th>
+                        <th>Monto Bs BCV</th>
+                        <th>Monto Bs Paralelo</th>
+                        <th>Monto Diferencia en Bs</th>
+                        <th>Monto Diferencia en $</th>
+                        <th>Total pagado en $</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>120</td>
+                        <td>68.31</td>
+                        <td>88.90</td>
+                        <td>60</td>
+                        <td>60</td>
+                        <td>60</td>
+                        <td>60</td>
+                        <td>60</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </mai>
+
+    <script src="./app.js"></script>
+</body>
+</html>
