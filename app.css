@@ -94,3 +94,9 @@ body {
 #resultado table th {
     text-transform: uppercase;
 }
+
+@media only screen and (max-width: 600px) {
+    #calculadora .flex {
+        display: block;
+    }
+}
