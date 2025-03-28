@@ -91,12 +91,19 @@ const printResultForRSM = (values, locale, options) => {
     const data = getDataReports(values, results);
     const fragmentResultadoSm = document.createDocumentFragment();
     const cloneResultadoSm = resultadoTemplateSm.cloneNode(true);
+    let cont = 0;
 
     resultado.textContent = '';
 
     data.forEach(element => {
         element.forEach(item => {
-            fragmentResultadoSm.appendChild(createItemToListResultSm(item[0], transformToMoney(item[1], locale, options)));
+            if(cont == 0 || cont == 6 || cont == 7) {
+                fragmentResultadoSm.appendChild(createItemToListResultSm(item[0], transformToMoney(item[1], locale, options)));
+            }
+            else {
+                fragmentResultadoSm.appendChild(createItemToListResultSm(item[0], transformToMoney(item[1])));
+            }
+            cont++;
         });
     });
 
