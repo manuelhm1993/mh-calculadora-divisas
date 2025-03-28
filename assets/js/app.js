@@ -51,7 +51,8 @@ const createItemToListResultSm = (razon, monto) => {
     return cloneReporteLista;
 };
 
-const getDataReports = (values, results) => {
+const getDataReports = (values) => {
+    const results = calculos(values);
     const data = [
         Object.entries(values),
         Object.entries(results)
@@ -60,14 +61,9 @@ const getDataReports = (values, results) => {
     return data;
 };
 
-const printResultForRML = (values, locale, options) => {
-    const results = calculos(values);
-    const data = getDataReports(values, results);
-    const cloneResultadoMdLg = resultadoTemplateMdLg.cloneNode(true);
-    const cloneReporteTabla = reporteTablaTemplate.firstElementChild.cloneNode(true);
+const addItemsToCloneTable = (values, locale, options, cloneReporteTabla) => {
+    const data = getDataReports(values);
     let cont = 0;
-    
-    resultado.textContent = '';
 
     data.forEach(element => {
         element.forEach(item => {
@@ -81,19 +77,13 @@ const printResultForRML = (values, locale, options) => {
         });
     });
 
-    cloneResultadoMdLg.querySelector('table tbody').appendChild(cloneReporteTabla);
-
-    resultado.appendChild(cloneResultadoMdLg);
+    return cloneReporteTabla;
 };
 
-const printResultForRSM = (values, locale, options) => {
-    const results = calculos(values);
-    const data = getDataReports(values, results);
+const addItemsToCloneList = (values, locale, options) => {
+    const data = getDataReports(values);
     const fragmentResultadoSm = document.createDocumentFragment();
-    const cloneResultadoSm = resultadoTemplateSm.cloneNode(true);
     let cont = 0;
-
-    resultado.textContent = '';
 
     data.forEach(element => {
         element.forEach(item => {
@@ -106,6 +96,28 @@ const printResultForRSM = (values, locale, options) => {
             cont++;
         });
     });
+
+    return fragmentResultadoSm;
+};
+
+const printResultForRML = (values, locale, options) => {
+    const cloneResultadoMdLg = resultadoTemplateMdLg.cloneNode(true);
+    let cloneReporteTabla = reporteTablaTemplate.firstElementChild.cloneNode(true);
+    
+    resultado.textContent = '';
+
+    cloneReporteTabla = addItemsToCloneTable(values, locale, options, cloneReporteTabla);
+
+    cloneResultadoMdLg.querySelector('table tbody').appendChild(cloneReporteTabla);
+
+    resultado.appendChild(cloneResultadoMdLg);
+};
+
+const printResultForRSM = (values, locale, options) => {
+    const cloneResultadoSm = resultadoTemplateSm.cloneNode(true);
+    const fragmentResultadoSm = addItemsToCloneList(values, locale, options);
+
+    resultado.textContent = '';
 
     cloneResultadoSm.querySelector('.list-group').appendChild(fragmentResultadoSm);
 
