@@ -11,17 +11,10 @@ const resultadoTemplateSm = document.querySelector('#resultado-template-sm').con
 const reporteListaTemplate = document.querySelector('#reporte-lista-template').content;
 
 //Fragmentos
-const fragmentResultadoMdLg = document.createDocumentFragment();
 const fragmentResultadoSm = document.createDocumentFragment();
-
-//Clones
-//Resolución +800
-const cloneResultadoMdLg = resultadoTemplateMdLg.cloneNode(true);
-const cloneReporteTabla = reporteTablaTemplate.firstElementChild.cloneNode(true);
 
 //Resolución -800
 const cloneResultadoSm = resultadoTemplateSm.cloneNode(true);
-const cloneReporteLista = reporteListaTemplate.firstElementChild.cloneNode(true);
 
 const transformToMoney = (number, locale = "es-ve", options = { style: "currency", currency: "VES", maximumFractionDigits: 2 }) => {
     return new Intl.NumberFormat(locale, options).format(number);
@@ -48,6 +41,9 @@ const printResultForRML = (values, locale, options) => {
 
     resultado.innerHTML = '';
 
+    const cloneReporteTabla = reporteTablaTemplate.firstElementChild.cloneNode(true);
+    const cloneResultadoMdLg = resultadoTemplateMdLg.cloneNode(true);
+
     cloneReporteTabla.cells[0].textContent = transformToMoney(values.monto, locale, options);
     cloneReporteTabla.cells[1].textContent = transformToMoney(values.bcv);
     cloneReporteTabla.cells[2].textContent = transformToMoney(values.paralelo);
@@ -59,9 +55,20 @@ const printResultForRML = (values, locale, options) => {
 
     cloneResultadoMdLg.querySelector('table tbody').appendChild(cloneReporteTabla);
 
-    fragmentResultadoMdLg.appendChild(cloneResultadoMdLg);
+    resultado.appendChild(cloneResultadoMdLg);
+};
 
-    resultado.appendChild(fragmentResultadoMdLg);
+const createItemToListResultSm = (razon, monto) => {
+    const cloneReporteLista = reporteListaTemplate.firstElementChild.cloneNode(true);
+
+    cloneReporteLista.querySelector('.d-flex p').textContent = razon;
+    cloneReporteLista.querySelector('.d-flex small').textContent = monto;
+
+    return cloneReporteLista;
+};
+
+const addItemToListResultSm = (cloneReporteLista) => {
+    fragmentResultadoSm.appendChild(cloneReporteLista);
 };
 
 const printResultForRSM = (values, locale, options) => {
@@ -69,48 +76,18 @@ const printResultForRSM = (values, locale, options) => {
 
     resultado.innerHTML = '';
 
-    grupo.innerHTML = '';
-    grupo.innerHTML = `
-        <div class="d-flex w-100 justify-content-between">
-            <p class="mb-1 fw-bold text-uppercase fs-6">Monto $</p>
-            <small class="fs-6">${transformToMoney(values.monto, locale, options)}</small>
-        </div>
+    addItemToListResultSm(createItemToListResultSm("Monto $", transformToMoney(values.monto, locale, options)));
+    addItemToListResultSm(createItemToListResultSm("BCV", transformToMoney(values.bcv, locale, options)));
+    addItemToListResultSm(createItemToListResultSm("Paralelo", transformToMoney(values.paralelo, locale, options)));
+    addItemToListResultSm(createItemToListResultSm("Total BCV", transformToMoney(results.bs_bcv, locale, options)));
+    addItemToListResultSm(createItemToListResultSm("Total Paralelo", transformToMoney(results.bs_paralelo, locale, options)));
+    addItemToListResultSm(createItemToListResultSm("Diferencia en Bs", transformToMoney(results.diff_bs, locale, options)));
+    addItemToListResultSm(createItemToListResultSm("Diferencia en $", transformToMoney(results.diff_usd, locale, options)));
+    addItemToListResultSm(createItemToListResultSm("Total en $", transformToMoney((values.monto - results.diff_usd), locale, options)));
 
-        <div class="d-flex w-100 justify-content-between">
-            <p class="mb-1 fw-bold text-uppercase fs-6">BCV</p>
-            <small class="fs-6">${transformToMoney(values.bcv, locale, options)}</small>
-        </div>
+    cloneResultadoSm.querySelector('.list-group').appendChild(fragmentResultadoSm);
 
-        <div class="d-flex w-100 justify-content-between">
-            <p class="mb-1 fw-bold text-uppercase fs-6">Paralelo</p>
-            <small class="fs-6">${transformToMoney(values.paralelo, locale, options)}</small>
-        </div>
-
-        <div class="d-flex w-100 justify-content-between">
-            <p class="mb-1 fw-bold text-uppercase fs-6">Total BCV</p>
-            <small class="fs-6">${transformToMoney(results.bs_bcv, locale, options)}</small>
-        </div>
-
-        <div class="d-flex w-100 justify-content-between">
-            <p class="mb-1 fw-bold text-uppercase fs-6">Total Paralelo</p>
-            <small class="fs-6">${transformToMoney(results.bs_paralelo, locale, options)}</small>
-        </div>
-
-        <div class="d-flex w-100 justify-content-between">
-            <p class="mb-1 fw-bold text-uppercase fs-6">Diferencia en Bs</p>
-            <small class="fs-6">${transformToMoney(results.diff_bs, locale, options)}</small>
-        </div>
-
-        <div class="d-flex w-100 justify-content-between">
-            <p class="mb-1 fw-bold text-uppercase fs-6">Diferencia en $</p>
-            <small class="fs-6">${transformToMoney(results.diff_usd, locale, options)}</small>
-        </div>
-
-        <div class="d-flex w-100 justify-content-between">
-            <p class="mb-1 fw-bold text-uppercase fs-6">Total pagado en $</p>
-            <small class="fs-6">${transformToMoney((values.monto - results.diff_usd), locale, options)}</small>
-        </div>
-    `;
+    resultado.appendChild(cloneResultadoSm);
 };
 
 const reset = (screenWidth, caller = 'resetear') => {
