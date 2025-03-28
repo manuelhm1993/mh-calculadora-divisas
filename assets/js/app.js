@@ -15,7 +15,7 @@ const reset = (caller = 'resetear') => {
     calculadora['paralelo'].value = '';
     calculadora['monto'].value = '';
 
-    if(caller == 'resetear') resultado.innerHTML = '';
+    if(caller == 'resetear') resultado.textContent = '';
 
     calculadora['bcv'].focus();
 };
@@ -52,7 +52,7 @@ const createItemToListResultSm = (razon, monto) => {
 const printResultForRML = (values, locale, options) => {
     const results = calculos(values);
 
-    resultado.innerHTML = '';
+    resultado.textContent = '';
 
     const cloneResultadoMdLg = resultadoTemplateMdLg.cloneNode(true);
     const cloneReporteTabla = reporteTablaTemplate.firstElementChild.cloneNode(true);
@@ -74,7 +74,7 @@ const printResultForRML = (values, locale, options) => {
 const printResultForRSM = (values, locale, options) => {
     const results = calculos(values);
 
-    resultado.innerHTML = '';
+    resultado.textContent = '';
 
     const fragmentResultadoSm = document.createDocumentFragment();
 
