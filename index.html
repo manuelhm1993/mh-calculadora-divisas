@@ -89,6 +89,55 @@
                 </div>
             </div>
         </section>
+
+        <!-- Zona de templates -->
+        <template id="resultado-template">
+            <span class="border-top border-dark w-100 d-block mt-3"></span>
+
+            <h2 class="h4 text-uppercase text-center text-dark mt-3 fw-bold">Resultado</h2>
+        </template>
+
+        <template id="reporte-tabla-template">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr class="bg-dark bg-gradient text-white">
+                            <th>Monto $</th>
+                            <th>Tasa Bs BCV</th>
+                            <th>Tasa Bs Paralelo</th>
+                            <th>Monto Bs BCV</th>
+                            <th>Monto Bs Paralelo</th>
+                            <th>Diferencia en Bs</th>
+                            <th>Diferencia en $</th>
+                            <th>Total pagado en $</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-secondary bg-gradient text-white text-center">
+                        <tr>
+                            <td>120</td>
+                            <td>68.31</td>
+                            <td>88.90</td>
+                            <td>60</td>
+                            <td>60</td>
+                            <td>60</td>
+                            <td>60</td>
+                            <td>60</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </template>
+
+        <template id="reporte-lista-template">
+            <div class="card text-center mx-auto mh-card-sm">
+                <div class="list-group">
+                    <div class="d-flex w-100 justify-content-between">
+                        <p class="mb-1 fw-bold text-uppercase fs-6">Monto</p>
+                        <small class="fs-6">$120</small>
+                    </div>
+                </div>
+            </div>
+        </template>
     </main>
 
     <script src="./assets/bootstrap-5.0.2-dist/js/bootstrap.bundle.min.js"></script>
