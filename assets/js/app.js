@@ -22,15 +22,17 @@ const reset = (caller = 'resetear') => {
 
 const calculos = (values) => {
     //Realizar los cálculos
-    const bs_bcv = values.monto * values.bcv;
-    const bs_paralelo = values.monto * values.paralelo;
+    const bs_bcv = values['Monto $'] * values['BCV'];
+    const bs_paralelo = values['Monto $'] * values['Paralelo'];
     const diff_bs = bs_paralelo - bs_bcv;
+    const diff_usd = (values['Paralelo'] > 0) ? diff_bs / values['Paralelo'] : 0;
 
     const results = {
-        'bs_bcv': bs_bcv,
-        'bs_paralelo': bs_paralelo,
-        'diff_bs': diff_bs,
-        'diff_usd': (values.paralelo > 0) ? diff_bs / values.paralelo : 0,
+        'Total BCV': bs_bcv,
+        'Total Paralelo': bs_paralelo,
+        'Diferencia en Bs': diff_bs,
+        'Diferencia en $': diff_usd,
+        'Total en $': values['Monto $'] - diff_usd
     };
 
     return results;
@@ -49,22 +51,35 @@ const createItemToListResultSm = (razon, monto) => {
     return cloneReporteLista;
 };
 
+const getDataReports = (values, results) => {
+    const data = [
+        Object.entries(values),
+        Object.entries(results)
+    ];
+
+    return data;
+};
+
 const printResultForRML = (values, locale, options) => {
     const results = calculos(values);
-
-    resultado.textContent = '';
-
+    const data = getDataReports(values, results);
     const cloneResultadoMdLg = resultadoTemplateMdLg.cloneNode(true);
     const cloneReporteTabla = reporteTablaTemplate.firstElementChild.cloneNode(true);
+    let cont = 0;
+    
+    resultado.textContent = '';
 
-    cloneReporteTabla.cells[0].textContent = transformToMoney(values.monto, locale, options);
-    cloneReporteTabla.cells[1].textContent = transformToMoney(values.bcv);
-    cloneReporteTabla.cells[2].textContent = transformToMoney(values.paralelo);
-    cloneReporteTabla.cells[3].textContent = transformToMoney(results.bs_bcv);
-    cloneReporteTabla.cells[4].textContent = transformToMoney(results.bs_paralelo);
-    cloneReporteTabla.cells[5].textContent = transformToMoney(results.diff_bs);
-    cloneReporteTabla.cells[6].textContent = transformToMoney(results.diff_usd, locale, options);
-    cloneReporteTabla.cells[7].textContent = transformToMoney((values.monto - results.diff_usd), locale, options);
+    data.forEach(element => {
+        element.forEach(item => {
+            if(cont == 0 || cont == 6 || cont == 7) {
+                cloneReporteTabla.cells[cont].textContent = transformToMoney(item[1], locale, options);
+            }
+            else {
+                cloneReporteTabla.cells[cont].textContent = transformToMoney(item[1]);
+            }
+            cont++;
+        });
+    });
 
     cloneResultadoMdLg.querySelector('table tbody').appendChild(cloneReporteTabla);
 
@@ -78,14 +93,14 @@ const printResultForRSM = (values, locale, options) => {
 
     const fragmentResultadoSm = document.createDocumentFragment();
 
-    fragmentResultadoSm.appendChild(createItemToListResultSm("Monto $", transformToMoney(values.monto, locale, options)));
-    fragmentResultadoSm.appendChild(createItemToListResultSm("BCV", transformToMoney(values.bcv, locale, options)));
-    fragmentResultadoSm.appendChild(createItemToListResultSm("Paralelo", transformToMoney(values.paralelo, locale, options)));
+    fragmentResultadoSm.appendChild(createItemToListResultSm("Monto $", transformToMoney(values['Monto $'], locale, options)));
+    fragmentResultadoSm.appendChild(createItemToListResultSm("BCV", transformToMoney(values['BCV'], locale, options)));
+    fragmentResultadoSm.appendChild(createItemToListResultSm("Paralelo", transformToMoney(values['Paralelo'], locale, options)));
     fragmentResultadoSm.appendChild(createItemToListResultSm("Total BCV", transformToMoney(results.bs_bcv, locale, options)));
     fragmentResultadoSm.appendChild(createItemToListResultSm("Total Paralelo", transformToMoney(results.bs_paralelo, locale, options)));
     fragmentResultadoSm.appendChild(createItemToListResultSm("Diferencia en Bs", transformToMoney(results.diff_bs, locale, options)));
     fragmentResultadoSm.appendChild(createItemToListResultSm("Diferencia en $", transformToMoney(results.diff_usd, locale, options)));
-    fragmentResultadoSm.appendChild(createItemToListResultSm("Total en $", transformToMoney((values.monto - results.diff_usd), locale, options)));
+    fragmentResultadoSm.appendChild(createItemToListResultSm("Total en $", transformToMoney((values['Monto $'] - results.diff_usd), locale, options)));
 
     const cloneResultadoSm = resultadoTemplateSm.cloneNode(true);
 
@@ -108,9 +123,9 @@ document.addEventListener('submit', (e) => {
     if(e.target.id == calculadora.id) {
         //Capturar el valor de los campos
         const values = {
-            'bcv': calculadora['bcv'].value,
-            'paralelo': calculadora['paralelo'].value,
-            'monto': calculadora['monto'].value,
+            'Monto $': calculadora['monto'].value,
+            'BCV': calculadora['bcv'].value,
+            'Paralelo': calculadora['paralelo'].value,
         };
 
         //Definir el formato moneda
