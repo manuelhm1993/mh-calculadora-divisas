@@ -10,8 +10,14 @@ const reporteTablaTemplate = document.querySelector('#reporte-tabla-template').c
 const resultadoTemplateSm = document.querySelector('#resultado-template-sm').content;
 const reporteListaTemplate = document.querySelector('#reporte-lista-template').content;
 
-const transformToMoney = (number, locale = "es-ve", options = { style: "currency", currency: "VES", maximumFractionDigits: 2 }) => {
-    return new Intl.NumberFormat(locale, options).format(number);
+const reset = (caller = 'resetear') => {
+    calculadora['bcv'].value = '';
+    calculadora['paralelo'].value = '';
+    calculadora['monto'].value = '';
+
+    if(caller == 'resetear') resultado.innerHTML = '';
+
+    calculadora['bcv'].focus();
 };
 
 const calculos = (values) => {
@@ -28,6 +34,19 @@ const calculos = (values) => {
     };
 
     return results;
+};
+
+const transformToMoney = (number, locale = "es-ve", options = { style: "currency", currency: "VES", maximumFractionDigits: 2 }) => {
+    return new Intl.NumberFormat(locale, options).format(number);
+};
+
+const createItemToListResultSm = (razon, monto) => {
+    const cloneReporteLista = reporteListaTemplate.firstElementChild.cloneNode(true);
+
+    cloneReporteLista.querySelector('.d-flex p').textContent = razon;
+    cloneReporteLista.querySelector('.d-flex small').textContent = monto;
+
+    return cloneReporteLista;
 };
 
 const printResultForRML = (values, locale, options) => {
@@ -52,15 +71,6 @@ const printResultForRML = (values, locale, options) => {
     resultado.appendChild(cloneResultadoMdLg);
 };
 
-const createItemToListResultSm = (razon, monto) => {
-    const cloneReporteLista = reporteListaTemplate.firstElementChild.cloneNode(true);
-
-    cloneReporteLista.querySelector('.d-flex p').textContent = razon;
-    cloneReporteLista.querySelector('.d-flex small').textContent = monto;
-
-    return cloneReporteLista;
-};
-
 const printResultForRSM = (values, locale, options) => {
     const results = calculos(values);
 
@@ -77,30 +87,11 @@ const printResultForRSM = (values, locale, options) => {
     fragmentResultadoSm.appendChild(createItemToListResultSm("Diferencia en $", transformToMoney(results.diff_usd, locale, options)));
     fragmentResultadoSm.appendChild(createItemToListResultSm("Total en $", transformToMoney((values.monto - results.diff_usd), locale, options)));
 
-    resultadoTemplateSm.cloneNode(true).querySelector('.list-group').appendChild(fragmentResultadoSm);
+    const cloneResultadoSm = resultadoTemplateSm.cloneNode(true);
 
-    resultado.appendChild(resultadoTemplateSm);
-};
+    cloneResultadoSm.querySelector('.list-group').appendChild(fragmentResultadoSm);
 
-const reset = (screenWidth, caller = 'resetear') => {
-    calculadora['bcv'].value = '';
-    calculadora['paralelo'].value = '';
-    calculadora['monto'].value = '';
-
-    if(caller == 'resetear') {
-        resultado.classList.add('d-none');
-        resultadoSM.classList.add('d-none');
-    }
-    else {
-        if(screenWidth >= 800) {
-            resultado.classList.remove('d-none');
-        }
-        else {
-            resultadoSM.classList.remove('d-none');
-        }
-    }
-
-    calculadora['bcv'].focus();
+    resultado.appendChild(cloneResultadoSm);
 };
 
 document.addEventListener('reset', (e) => {
@@ -135,11 +126,6 @@ document.addEventListener('submit', (e) => {
             printResultForRSM(values, locale, options);
         }
 
-        //reset(screenWidth, calculadora.id);
+        reset(e.target.id);
     }
 });
-
-//TODO: solventar el bug al redimensionar
-/*window.addEventListener("resize", (e) => {
-    location.reload();
-});*/
