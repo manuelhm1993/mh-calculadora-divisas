@@ -1,13 +1,27 @@
 const calculadora = document.querySelector('#calculadora');
 const resultado = document.querySelector('#resultado');
-const resultadoSM = document.querySelector('#resultado-sm');
 
+//Templates
 //Resolución +800
-const table = document.querySelector('#resultado table');
-const tr = document.querySelector('#resultado table tbody tr');
+const resultadoTemplateMdLg = document.querySelector('#resultado-template-md-lg').content;
+const reporteTablaTemplate = document.querySelector('#reporte-tabla-template').content;
 
 //Resolución -800
-const grupo = document.querySelector('#resultado-sm .list-group');
+const resultadoTemplateSm = document.querySelector('#resultado-template-sm').content;
+const reporteListaTemplate = document.querySelector('#reporte-lista-template').content;
+
+//Fragmentos
+const fragmentResultadoMdLg = document.createDocumentFragment();
+const fragmentResultadoSm = document.createDocumentFragment();
+
+//Clones
+//Resolución +800
+const cloneResultadoMdLg = resultadoTemplateMdLg.cloneNode(true);
+const cloneReporteTabla = reporteTablaTemplate.firstElementChild.cloneNode(true);
+
+//Resolución -800
+const cloneResultadoSm = resultadoTemplateSm.cloneNode(true);
+const cloneReporteLista = reporteListaTemplate.firstElementChild.cloneNode(true);
 
 const transformToMoney = (number, locale = "es-ve", options = { style: "currency", currency: "VES", maximumFractionDigits: 2 }) => {
     return new Intl.NumberFormat(locale, options).format(number);
@@ -32,25 +46,28 @@ const calculos = (values) => {
 const printResultForRML = (values, locale, options) => {
     const results = calculos(values);
 
-    grupo.innerHTML = '';
+    resultado.innerHTML = '';
 
-    tr.innerHTML = '';
-    tr.innerHTML = `
-        <td>${transformToMoney(values.monto, locale, options)}</td>
-        <td>${transformToMoney(values.bcv)}</td>
-        <td>${transformToMoney(values.paralelo)}</td>
-        <td>${transformToMoney(results.bs_bcv)}</td>
-        <td>${transformToMoney(results.bs_paralelo)}</td>
-        <td>${transformToMoney(results.diff_bs)}</td>
-        <td>${transformToMoney(results.diff_usd, locale, options)}</td>
-        <td>${transformToMoney((values.monto - results.diff_usd), locale, options)}</td>
-    `;
+    cloneReporteTabla.cells[0].textContent = transformToMoney(values.monto, locale, options);
+    cloneReporteTabla.cells[1].textContent = transformToMoney(values.bcv);
+    cloneReporteTabla.cells[2].textContent = transformToMoney(values.paralelo);
+    cloneReporteTabla.cells[3].textContent = transformToMoney(results.bs_bcv);
+    cloneReporteTabla.cells[4].textContent = transformToMoney(results.bs_paralelo);
+    cloneReporteTabla.cells[5].textContent = transformToMoney(results.diff_bs);
+    cloneReporteTabla.cells[6].textContent = transformToMoney(results.diff_usd, locale, options);
+    cloneReporteTabla.cells[7].textContent = transformToMoney((values.monto - results.diff_usd), locale, options);
+
+    cloneResultadoMdLg.querySelector('table tbody').appendChild(cloneReporteTabla);
+
+    fragmentResultadoMdLg.appendChild(cloneResultadoMdLg);
+
+    resultado.appendChild(fragmentResultadoMdLg);
 };
 
 const printResultForRSM = (values, locale, options) => {
     const results = calculos(values);
 
-    table.innerHTML = '';
+    resultado.innerHTML = '';
 
     grupo.innerHTML = '';
     grupo.innerHTML = `
@@ -149,7 +166,7 @@ document.addEventListener('submit', (e) => {
             printResultForRSM(values, locale, options);
         }
 
-        reset(screenWidth, calculadora.id);
+        //reset(screenWidth, calculadora.id);
     }
 });
 
