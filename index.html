@@ -11,36 +11,35 @@
     <title>Calculadora de divisas MH</title>
 </head>
 <body>
-    <main id="main">
+    <main id="main" class="container">
         <h1 class="text-center text-uppercase mt-3">Calculadora de divisas</h1>
 
-        <div class="card text-center mx-auto mt-3 text-white bg-primary bg-gradient">
-            <div class="card-header">
-                <h2 class="card-title h5 text-uppercase text-dark">Datos de entrada</h2>
-            </div>
-            <div class="card-body">
-                <form id="calculadora">
-                    <div class="mb-3">
-                        <input type="number" class="form-control" name="bcv" id="bcv" min="0" step="0.01" placeholder="Tasa BCV" required>
-                    </div>
-
-                    <div class="mb-3"></label>
-                        <input type="number" class="form-control" name="paralelo" id="paralelo" min="0" step="0.01" placeholder="Tasa paralelo" required>
-                    </div>
-
-                    <div class="mb-3"></label>
-                        <input type="number" class="form-control" name="monto" id="monto" min="0" step="0.01" placeholder="Monto en $" required>
-                    </div>
-
-                    <div class="d-grid gap-2">
-                        <input type="submit" value="Calcular" id="calcular" class="text-uppercase btn btn-dark btn-sm">
-                        <input type="reset" value="Resetear" id="resetear" class="text-uppercase btn btn-dark btn-sm">
-                    </div>
-                </form>
+        <div class="row">
+            <div class="card text-center mx-auto mt-3 text-white bg-primary bg-gradient col-9 col-md-8 col-lg-6">
+                <div class="card-header">
+                    <h2 class="card-title h5 text-uppercase text-dark">Datos de entrada</h2>
+                </div>
+                <div class="card-body">
+                    <form id="calculadora">
+                        <div class="mb-3">
+                            <input type="number" class="form-control" name="bcv" id="bcv" min="0" step="0.01" placeholder="Tasa BCV" required>
+                        </div>
+                        <div class="mb-3"></label>
+                            <input type="number" class="form-control" name="paralelo" id="paralelo" min="0" step="0.01" placeholder="Tasa paralelo" required>
+                        </div>
+                        <div class="mb-3"></label>
+                            <input type="number" class="form-control" name="monto" id="monto" min="0" step="0.01" placeholder="Monto en $" required>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <input type="submit" value="Calcular" id="calcular" class="text-uppercase btn btn-dark btn-sm">
+                            <input type="reset" value="Resetear" id="resetear" class="text-uppercase btn btn-dark btn-sm">
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
 
-        <section id="resultado" class="container"></section>
+        <section id="resultado" class="row"></section>
 
         <!-- Zona de templates -->
         <!-- Tabla +800 -->
@@ -54,13 +53,13 @@
                     <thead>
                         <tr class="bg-dark bg-gradient text-white">
                             <th>Monto $</th>
-                            <th>Tasa Bs BCV</th>
-                            <th>Tasa Bs Paralelo</th>
-                            <th>Monto Bs BCV</th>
-                            <th>Monto Bs Paralelo</th>
+                            <th>BCV</th>
+                            <th>Paralelo</th>
+                            <th>Monto BCV</th>
+                            <th>Monto Paralelo</th>
                             <th>Diferencia en Bs</th>
                             <th>Diferencia en $</th>
-                            <th>Total pagado en $</th>
+                            <th>Total en $</th>
                         </tr>
                     </thead>
                     <tbody class="bg-secondary bg-gradient text-white text-center">
@@ -89,7 +88,7 @@
 
             <h2 class="h4 text-uppercase text-center text-dark mt-3 fw-bold">Resultado</h2>
 
-            <div class="card text-center mx-auto mh-card-sm">
+            <div class="card text-center mx-auto col-9 col-md-8 col-lg-6">
                 <div class="list-group">
                     
                 </div>
