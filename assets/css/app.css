@@ -10,25 +10,3 @@ body {
     text-transform: uppercase;
     font-size: 0.9rem;
 }
-
-.card {
-    width: 40%;
-}
-
-@media only screen and (max-width: 400px) {
-    .card {
-        width: 50%;
-    }
-}
-
-@media only screen and (max-width: 900px) {
-    .mh-card-sm {
-        width: 70%;
-    }
-}
-
-@media only screen and (max-width: 1900px) {
-    .mh-card-sm {
-        width: 55%;
-    }
-}
