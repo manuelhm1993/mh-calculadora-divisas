@@ -30,8 +30,8 @@ const reset = (caller = 'resetear') => {
 
 const calcularUSD = (values) => {
     //Realizar los cálculos
-    const bs_bcv = values['Monto $'] * values['BCV'];
-    const bs_paralelo = values['Monto $'] * values['Paralelo'];
+    const bs_bcv = values['Monto'] * values['BCV'];
+    const bs_paralelo = values['Monto'] * values['Paralelo'];
     const diff_bs = bs_paralelo - bs_bcv;
     const diff_usd = (values['Paralelo'] > 0) ? diff_bs / values['Paralelo'] : 0;
 
@@ -47,8 +47,8 @@ const calcularUSD = (values) => {
 
 const calcularVES = (values) => {
     //Realizar los cálculos
-    const bs_bcv = values['Monto $'] / values['BCV'];
-    const bs_paralelo = values['Monto $'] / values['Paralelo'];
+    const bs_bcv = values['Monto'] / values['BCV'];
+    const bs_paralelo = values['Monto'] / values['Paralelo'];
     const diff_bs = bs_bcv - bs_paralelo;
     const diff_usd = diff_bs * values['Paralelo']
 
@@ -74,7 +74,7 @@ const calculos = (values, base) => {
             'Total Paralelo': data.bs_paralelo,
             'Diferencia en Bs': data.diff_bs,
             'Diferencia en $': data.diff_usd,
-            'Total en $': values['Monto $'] - data.diff_usd
+            'Total en $': values['Monto'] - data.diff_usd
         };
     }
     else 
@@ -84,7 +84,7 @@ const calculos = (values, base) => {
             'Total Paralelo': data.bs_paralelo,
             'Diferencia en $': data.diff_bs,
             'Diferencia en Bs': data.diff_usd,
-            'Total en Bs': values['Monto $'] - data.diff_usd
+            'Total en Bs': values['Monto'] - data.diff_usd
         };
     }
 
@@ -114,7 +114,7 @@ const getDataReports = (values) => {
     return data;
 };
 
-const addItemsToCloneTable = (values, locale, options, cloneReporteTabla) => {
+const addItemsToCloneTable = (values, locale, options, cloneReporteTabla, cloneResultadoMdLg) => {
     const data = getDataReports(values);
     let cont = 0;
 
@@ -136,6 +136,8 @@ const addItemsToCloneTable = (values, locale, options, cloneReporteTabla) => {
     {
         data.forEach(element => {
             element.forEach(item => {
+                cloneResultadoMdLg.cells[cont].textContent = item[0];
+
                 if(cont == 3 || cont == 4 || cont == 5) {
                     cloneReporteTabla.cells[cont].textContent = transformToMoney(item[1], locale, options);
                 }
@@ -193,7 +195,7 @@ const printResultForRML = (values, locale, options) => {
     
     resultado.textContent = '';
 
-    cloneReporteTabla = addItemsToCloneTable(values, locale, options, cloneReporteTabla);
+    cloneReporteTabla = addItemsToCloneTable(values, locale, options, cloneReporteTabla, cloneResultadoMdLg.querySelector('table thead tr'));
 
     cloneResultadoMdLg.querySelector('table tbody').appendChild(cloneReporteTabla);
 
@@ -263,7 +265,7 @@ document.addEventListener('submit', (e) => {
     if(e.target.id == calculadora.id) {
         //Capturar el valor de los campos
         const values = {
-            'Monto $': calculadora['monto'].value,
+            'Monto': calculadora['monto'].value,
             'BCV': calculadora['bcv'].value,
             'Paralelo': calculadora['paralelo'].value
         };
