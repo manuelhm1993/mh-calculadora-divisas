@@ -21,7 +21,7 @@ const reset = (caller = 'resetear') => {
     calculadora['bcv'].value = '';
     calculadora['paralelo'].value = '';
     calculadora['monto'].value = '';
-    calculadora['base'][0].checked = true
+    calculadora['base'][0].checked = true;
 
     if(caller == 'resetear') resultado.textContent = '';
 
@@ -118,17 +118,34 @@ const addItemsToCloneTable = (values, locale, options, cloneReporteTabla) => {
     const data = getDataReports(values);
     let cont = 0;
 
-    data.forEach(element => {
-        element.forEach(item => {
-            if(cont == 0 || cont == 6 || cont == 7) {
-                cloneReporteTabla.cells[cont].textContent = transformToMoney(item[1], locale, options);
-            }
-            else {
-                cloneReporteTabla.cells[cont].textContent = transformToMoney(item[1]);
-            }
-            cont++;
+    if (calculadora['base'].value === 'usd') 
+    {
+        data.forEach(element => {
+            element.forEach(item => {
+                if(cont == 0 || cont == 6 || cont == 7) {
+                    cloneReporteTabla.cells[cont].textContent = transformToMoney(item[1], locale, options);
+                }
+                else {
+                    cloneReporteTabla.cells[cont].textContent = transformToMoney(item[1]);
+                }
+                cont++;
+            });
         });
-    });
+    } 
+    else 
+    {
+        data.forEach(element => {
+            element.forEach(item => {
+                if(cont == 3 || cont == 4 || cont == 5) {
+                    cloneReporteTabla.cells[cont].textContent = transformToMoney(item[1], locale, options);
+                }
+                else {
+                    cloneReporteTabla.cells[cont].textContent = transformToMoney(item[1]);
+                }
+                cont++;
+            });
+        });
+    }
 
     return cloneReporteTabla;
 };
@@ -138,17 +155,34 @@ const addItemsToCloneList = (values, locale, options) => {
     const fragmentResultadoSm = document.createDocumentFragment();
     let cont = 0;
 
-    data.forEach(element => {
-        element.forEach(item => {
-            if(cont == 0 || cont == 6 || cont == 7) {
-                fragmentResultadoSm.appendChild(createItemToListResultSm(item[0], transformToMoney(item[1], locale, options)));
-            }
-            else {
-                fragmentResultadoSm.appendChild(createItemToListResultSm(item[0], transformToMoney(item[1])));
-            }
-            cont++;
+    if (calculadora['base'].value === 'usd') 
+    {
+        data.forEach(element => {
+            element.forEach(item => {
+                if(cont == 0 || cont == 6 || cont == 7) {
+                    fragmentResultadoSm.appendChild(createItemToListResultSm(item[0], transformToMoney(item[1], locale, options)));
+                }
+                else {
+                    fragmentResultadoSm.appendChild(createItemToListResultSm(item[0], transformToMoney(item[1])));
+                }
+                cont++;
+            });
         });
-    });
+    } 
+    else 
+    {
+        data.forEach(element => {
+            element.forEach(item => {
+                if(cont == 3 || cont == 4 || cont == 5) {
+                    fragmentResultadoSm.appendChild(createItemToListResultSm(item[0], transformToMoney(item[1], locale, options)));
+                }
+                else {
+                    fragmentResultadoSm.appendChild(createItemToListResultSm(item[0], transformToMoney(item[1])));
+                }
+                cont++;
+            });
+        });
+    }
 
     return fragmentResultadoSm;
 };
