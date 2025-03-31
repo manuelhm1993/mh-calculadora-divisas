@@ -10,6 +10,12 @@ const reporteTablaTemplate = document.querySelector('#reporte-tabla-template').c
 const resultadoTemplateSm = document.querySelector('#resultado-template-sm').content;
 const reporteListaTemplate = document.querySelector('#reporte-lista-template').content;
 
+//URL de la API dolarapi.com
+const urlTasas = {
+    bcv: 'https://ve.dolarapi.com/v1/dolares/oficial',
+    paralelo: 'https://ve.dolarapi.com/v1/dolares/paralelo'
+};
+
 const reset = (caller = 'resetear') => {
     calculadora['bcv'].value = '';
     calculadora['paralelo'].value = '';
@@ -17,7 +23,7 @@ const reset = (caller = 'resetear') => {
 
     if(caller == 'resetear') resultado.textContent = '';
 
-    calculadora['bcv'].focus();
+    fetchTasa(urlTasas);
 };
 
 const calculos = (values) => {
@@ -137,7 +143,7 @@ const procesoFetch = async (url) => {
     cargarTasa(data);
 };
 
-const fetchTasa = async (url) => {
+const fetchTasa = (url) => {
     try 
     {
         if(typeof url === 'string') 
@@ -149,6 +155,8 @@ const fetchTasa = async (url) => {
                 procesoFetch(element);
             });
         }
+
+        calculadora['monto'].focus();
     } 
     catch (error) 
     {
@@ -157,11 +165,6 @@ const fetchTasa = async (url) => {
 };
 
 window.addEventListener('load', (e) => {
-    const urlTasas = {
-        bcv: 'https://ve.dolarapi.com/v1/dolares/oficial',
-        paralelo: 'https://ve.dolarapi.com/v1/dolares/paralelo'
-    };
-
     fetchTasa(urlTasas);
 });
 
