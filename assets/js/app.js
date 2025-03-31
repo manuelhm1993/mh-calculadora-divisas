@@ -21,13 +21,14 @@ const reset = (caller = 'resetear') => {
     calculadora['bcv'].value = '';
     calculadora['paralelo'].value = '';
     calculadora['monto'].value = '';
+    calculadora['base'][0].checked = true
 
     if(caller == 'resetear') resultado.textContent = '';
 
     fetchTasa(urlTasas);
 };
 
-const calculos = (values) => {
+const calcularUSD = (values) => {
     //Realizar los cálculos
     const bs_bcv = values['Monto $'] * values['BCV'];
     const bs_paralelo = values['Monto $'] * values['Paralelo'];
@@ -35,12 +36,57 @@ const calculos = (values) => {
     const diff_usd = (values['Paralelo'] > 0) ? diff_bs / values['Paralelo'] : 0;
 
     const results = {
-        'Total BCV': bs_bcv,
-        'Total Paralelo': bs_paralelo,
-        'Diferencia en Bs': diff_bs,
-        'Diferencia en $': diff_usd,
-        'Total en $': values['Monto $'] - diff_usd
+        bs_bcv: bs_bcv,
+        bs_paralelo: bs_paralelo,
+        diff_bs: diff_bs,
+        diff_usd: diff_usd
     };
+
+    return results;
+};
+
+const calcularVES = (values) => {
+    //Realizar los cálculos
+    const bs_bcv = values['Monto $'] / values['BCV'];
+    const bs_paralelo = values['Monto $'] / values['Paralelo'];
+    const diff_bs = bs_bcv - bs_paralelo;
+    const diff_usd = diff_bs * values['Paralelo']
+
+    const results = {
+        bs_bcv: bs_bcv,
+        bs_paralelo: bs_paralelo,
+        diff_bs: diff_bs,
+        diff_usd: diff_usd
+    };
+
+    return results;
+};
+
+const calculos = (values, base) => {
+    const data = (base === 'usd') ? calcularUSD(values) : calcularVES(values);
+    
+    let results = {};
+
+    if(base === 'usd') 
+    {
+        results = {
+            'Total BCV': data.bs_bcv,
+            'Total Paralelo': data.bs_paralelo,
+            'Diferencia en Bs': data.diff_bs,
+            'Diferencia en $': data.diff_usd,
+            'Total en $': values['Monto $'] - data.diff_usd
+        };
+    }
+    else 
+    {
+        results = {
+            'Total BCV': data.bs_bcv,
+            'Total Paralelo': data.bs_paralelo,
+            'Diferencia en $': data.diff_bs,
+            'Diferencia en Bs': data.diff_usd,
+            'Total en Bs': values['Monto $'] - data.diff_usd
+        };
+    }
 
     return results;
 };
@@ -59,7 +105,7 @@ const createItemToListResultSm = (razon, monto) => {
 };
 
 const getDataReports = (values) => {
-    const results = calculos(values);
+    const results = calculos(values, calculadora['base'].value);
     const data = [
         Object.entries(values),
         Object.entries(results)
@@ -185,7 +231,7 @@ document.addEventListener('submit', (e) => {
         const values = {
             'Monto $': calculadora['monto'].value,
             'BCV': calculadora['bcv'].value,
-            'Paralelo': calculadora['paralelo'].value,
+            'Paralelo': calculadora['paralelo'].value
         };
 
         //Definir el formato moneda
