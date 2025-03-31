@@ -49,8 +49,8 @@ const calcularVES = (values) => {
     //Realizar los cálculos
     const bs_bcv = values['Monto'] / values['BCV'];
     const bs_paralelo = values['Monto'] / values['Paralelo'];
-    const diff_bs = bs_bcv - bs_paralelo;
-    const diff_usd = diff_bs * values['Paralelo']
+    const diff_bs = diff_bs * values['Paralelo'];
+    const diff_usd = bs_bcv - bs_paralelo;
 
     const results = {
         bs_bcv: bs_bcv,
@@ -67,21 +67,14 @@ const calculos = (values, base) => {
     
     let results = {
         'Total BCV': data.bs_bcv,
-        'Total Paralelo': data.bs_paralelo
+        'Total Paralelo': data.bs_paralelo,
+        'Diferencia Bs': data.bs_paralelo,
+        'Diferencia $': data.bs_paralelo
     };
 
-    if(base === 'usd') 
-    {
-        results['Diferencia Bs'] = data.diff_bs;
-        results['Diferencia $'] = data.diff_usd;
-        results['Total en $'] = values['Monto'] - data.diff_usd;
-    }
-    else 
-    {
-        results['Diferencia $'] = data.diff_bs;
-        results['Diferencia Bs'] = data.diff_usd;
-        results['Total en Bs'] = values['Monto'] - data.diff_usd;
-    }
+    const key = (base === 'usd')  ? 'Total en $' : 'Total en Bs';
+
+    results[key] = values['Monto'] - data.diff_usd;
 
     return results;
 };
