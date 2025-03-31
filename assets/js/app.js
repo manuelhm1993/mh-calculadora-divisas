@@ -65,27 +65,22 @@ const calcularVES = (values) => {
 const calculos = (values, base) => {
     const data = (base === 'usd') ? calcularUSD(values) : calcularVES(values);
     
-    let results = {};
+    let results = {
+        'Total BCV': data.bs_bcv,
+        'Total Paralelo': data.bs_paralelo
+    };
 
     if(base === 'usd') 
     {
-        results = {
-            'Total BCV': data.bs_bcv,
-            'Total Paralelo': data.bs_paralelo,
-            'Diferencia en Bs': data.diff_bs,
-            'Diferencia en $': data.diff_usd,
-            'Total en $': values['Monto'] - data.diff_usd
-        };
+        results['Diferencia Bs'] = data.diff_bs;
+        results['Diferencia $'] = data.diff_usd;
+        results['Total en $'] = values['Monto'] - data.diff_usd;
     }
     else 
     {
-        results = {
-            'Total BCV': data.bs_bcv,
-            'Total Paralelo': data.bs_paralelo,
-            'Diferencia en $': data.diff_bs,
-            'Diferencia en Bs': data.diff_usd,
-            'Total en Bs': values['Monto'] - data.diff_usd
-        };
+        results['Diferencia $'] = data.diff_bs;
+        results['Diferencia Bs'] = data.diff_usd;
+        results['Total en Bs'] = values['Monto'] - data.diff_usd;
     }
 
     return results;
@@ -220,31 +215,32 @@ const cargarTasa = (data) => {
 };
 
 const procesoFetch = async (url) => {
-    const res = await fetch(url);
-    const data = await res.json();
-
-    cargarTasa(data);
-};
-
-const fetchTasa = (url) => {
     try 
     {
-        if(typeof url === 'string') 
-        {
-            procesoFetch(url);
-        }
-        else {
-            Object.values(url).forEach(element => {
-                procesoFetch(element);
-            });
-        }
+        const res = await fetch(url);
+        const data = await res.json();
 
-        calculadora['monto'].focus();
-    } 
+        cargarTasa(data);
+    }
     catch (error) 
     {
         console.log(error);
     }
+};
+
+const fetchTasa = (url) => {
+    if(typeof url === 'string') 
+    {
+        procesoFetch(url);
+    }
+    else 
+    {
+        Object.values(url).forEach(element => {
+            procesoFetch(element);
+        });
+    }
+
+    calculadora['monto'].focus();
 };
 
 window.addEventListener('load', (e) => {
