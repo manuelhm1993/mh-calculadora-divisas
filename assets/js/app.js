@@ -14,6 +14,7 @@ const reporteListaTemplate = document.querySelector('#reporte-lista-template').c
 const urlTasas = {
     bcv: 'https://ve.dolarapi.com/v1/dolares/oficial',
     paralelo: 'https://ve.dolarapi.com/v1/dolares/paralelo'
+    //binance: 'https://ve.dolarapi.com/v1/dolares/bitcoin'
 };
 
 const reset = (caller = 'resetear') => {
@@ -131,7 +132,7 @@ const printResultForRSM = (values, locale, options) => {
 };
 
 const cargarTasa = (data) => {
-    const key = (data.fuente == 'oficial') ? 'bcv' : data.fuente;
+    const key = (data.fuente == 'oficial') ? 'bcv' : 'paralelo';
 
     calculadora[key].value = parseFloat(data.promedio).toFixed(2);
 };
