@@ -49,8 +49,8 @@ const calcularVES = (values) => {
     //Realizar los cálculos
     const bs_bcv = values['Monto'] / values['BCV'];
     const bs_paralelo = values['Monto'] / values['Paralelo'];
-    const diff_usd = diff_bs * values['Paralelo'];
-    const diff_bs = bs_bcv - bs_paralelo;
+    const diff_usd = bs_bcv - bs_paralelo;
+    const diff_bs = diff_usd * values['Paralelo'];
 
     const results = {
         bs_bcv: bs_bcv,
@@ -65,16 +65,22 @@ const calcularVES = (values) => {
 const calculos = (values, base) => {
     const data = (base === 'usd') ? calcularUSD(values) : calcularVES(values);
     
-    let results = {
+    const results = {
         'Total BCV': data.bs_bcv,
         'Total Paralelo': data.bs_paralelo,
-        'Diferencia Bs': data.diff_bs,
-        'Diferencia $': data.diff_usd
     };
 
-    const key = (base === 'usd')  ? 'Total en $' : 'Total en Bs';
-
-    results[key] = values['Monto'] - data.diff_usd;
+    if(base === 'usd') {
+        results['Diferencia Bs'] = data.diff_bs;
+        results['Diferencia $'] = data.diff_usd;
+        results['Total $'] = values['Monto'] - data.diff_usd;
+    }
+    else 
+    {
+        results['Diferencia $'] = data.diff_usd;
+        results['Diferencia Bs'] = data.diff_bs;
+        results['Total Bs'] = values['Monto'] - data.diff_bs;
+    }
 
     return results;
 };
@@ -202,7 +208,7 @@ const printResultForRSM = (values, locale, options) => {
 };
 
 const cargarTasa = (data) => {
-    const key = (data.fuente == 'oficial') ? 'bcv' : 'paralelo';
+    const key = (data.fuente == 'oficial') ? 'bcv' : 'paralelo'; 
 
     calculadora[key].value = parseFloat(data.promedio).toFixed(2);
 };
@@ -212,6 +218,8 @@ const procesoFetch = async (url) => {
     {
         const res = await fetch(url);
         const data = await res.json();
+
+        console.log(data);
 
         cargarTasa(data);
     }
