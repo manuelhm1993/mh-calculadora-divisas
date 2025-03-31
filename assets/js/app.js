@@ -10,6 +10,12 @@ const reporteTablaTemplate = document.querySelector('#reporte-tabla-template').c
 const resultadoTemplateSm = document.querySelector('#resultado-template-sm').content;
 const reporteListaTemplate = document.querySelector('#reporte-lista-template').content;
 
+//URL de la API dolarapi.com
+const urlTasas = {
+    bcv: 'https://ve.dolarapi.com/v1/dolares/oficial',
+    paralelo: 'https://ve.dolarapi.com/v1/dolares/paralelo'
+};
+
 const reset = (caller = 'resetear') => {
     calculadora['bcv'].value = '';
     calculadora['paralelo'].value = '';
@@ -17,7 +23,7 @@ const reset = (caller = 'resetear') => {
 
     if(caller == 'resetear') resultado.textContent = '';
 
-    calculadora['bcv'].focus();
+    fetchTasa(urlTasas);
 };
 
 const calculos = (values) => {
@@ -123,6 +129,44 @@ const printResultForRSM = (values, locale, options) => {
 
     resultado.appendChild(cloneResultadoSm);
 };
+
+const cargarTasa = (data) => {
+    const key = (data.fuente == 'oficial') ? 'bcv' : data.fuente;
+
+    calculadora[key].value = parseFloat(data.promedio).toFixed(2);
+};
+
+const procesoFetch = async (url) => {
+    const res = await fetch(url);
+    const data = await res.json();
+
+    cargarTasa(data);
+};
+
+const fetchTasa = (url) => {
+    try 
+    {
+        if(typeof url === 'string') 
+        {
+            procesoFetch(url);
+        }
+        else {
+            Object.values(url).forEach(element => {
+                procesoFetch(element);
+            });
+        }
+
+        calculadora['monto'].focus();
+    } 
+    catch (error) 
+    {
+        console.log(error);
+    }
+};
+
+window.addEventListener('load', (e) => {
+    fetchTasa(urlTasas);
+});
 
 document.addEventListener('reset', (e) => {
     e.preventDefault();
