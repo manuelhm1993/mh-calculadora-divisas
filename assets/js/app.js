@@ -124,13 +124,31 @@ const printResultForRSM = (values, locale, options) => {
     resultado.appendChild(cloneResultadoSm);
 };
 
+const cargarTasa = (data) => {
+    const key = (data.fuente == 'oficial') ? 'bcv' : data.fuente;
+
+    calculadora[key].value = parseFloat(data.promedio).toFixed(2);
+};
+
+const procesoFetch = async (url) => {
+    const res = await fetch(url);
+    const data = await res.json();
+
+    cargarTasa(data);
+};
+
 const fetchTasa = async (url) => {
     try 
     {
-        const res = await fetch(url);
-        const data = await res.json();
-
-        cargarTasa(data);
+        if(typeof url === 'string') 
+        {
+            procesoFetch(url);
+        }
+        else {
+            Object.values(url).forEach(element => {
+                procesoFetch(element);
+            });
+        }
     } 
     catch (error) 
     {
@@ -138,15 +156,13 @@ const fetchTasa = async (url) => {
     }
 };
 
-const cargarTasa = (data) => {
-    const key = (data.fuente == 'oficial') ? 'bcv' : data.fuente;
-
-    calculadora[key].value = parseFloat(data.promedio).toFixed(2);
-};
-
 window.addEventListener('load', (e) => {
-    fetchTasa('https://ve.dolarapi.com/v1/dolares/oficial');
-    fetchTasa('https://ve.dolarapi.com/v1/dolares/paralelo');
+    const urlTasas = {
+        bcv: 'https://ve.dolarapi.com/v1/dolares/oficial',
+        paralelo: 'https://ve.dolarapi.com/v1/dolares/paralelo'
+    };
+
+    fetchTasa(urlTasas);
 });
 
 document.addEventListener('reset', (e) => {
