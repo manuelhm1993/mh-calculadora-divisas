@@ -10,30 +10,71 @@ const reporteTablaTemplate = document.querySelector('#reporte-tabla-template').c
 const resultadoTemplateSm = document.querySelector('#resultado-template-sm').content;
 const reporteListaTemplate = document.querySelector('#reporte-lista-template').content;
 
+//URL de la API dolarapi.com
+const urlTasas = {
+    bcv: 'https://ve.dolarapi.com/v1/dolares/oficial',
+    paralelo: 'https://ve.dolarapi.com/v1/dolares/paralelo'
+    //binance: 'https://ve.dolarapi.com/v1/dolares/bitcoin'
+};
+
 const reset = (caller = 'resetear') => {
     calculadora['bcv'].value = '';
     calculadora['paralelo'].value = '';
     calculadora['monto'].value = '';
+    calculadora['base'][0].checked = true;
 
     if(caller == 'resetear') resultado.textContent = '';
 
-    calculadora['bcv'].focus();
+    fetchTasa(urlTasas);
 };
 
-const calculos = (values) => {
+const calcularUSD = (values) => {
     //Realizar los cálculos
-    const bs_bcv = values['Monto $'] * values['BCV'];
-    const bs_paralelo = values['Monto $'] * values['Paralelo'];
+    const bs_bcv = values['Monto'] * values['BCV'];
+    const bs_paralelo = values['Monto'] * values['Paralelo'];
     const diff_bs = bs_paralelo - bs_bcv;
     const diff_usd = (values['Paralelo'] > 0) ? diff_bs / values['Paralelo'] : 0;
 
     const results = {
-        'Total BCV': bs_bcv,
-        'Total Paralelo': bs_paralelo,
-        'Diferencia en Bs': diff_bs,
-        'Diferencia en $': diff_usd,
-        'Total en $': values['Monto $'] - diff_usd
+        bs_bcv: bs_bcv,
+        bs_paralelo: bs_paralelo,
+        diff_bs: diff_bs,
+        diff_usd: diff_usd
     };
+
+    return results;
+};
+
+const calcularVES = (values) => {
+    //Realizar los cálculos
+    const bs_bcv = values['Monto'] / values['BCV'];
+    const bs_paralelo = values['Monto'] / values['Paralelo'];
+    const diff_usd = diff_bs * values['Paralelo'];
+    const diff_bs = bs_bcv - bs_paralelo;
+
+    const results = {
+        bs_bcv: bs_bcv,
+        bs_paralelo: bs_paralelo,
+        diff_bs: diff_bs,
+        diff_usd: diff_usd
+    };
+
+    return results;
+};
+
+const calculos = (values, base) => {
+    const data = (base === 'usd') ? calcularUSD(values) : calcularVES(values);
+    
+    let results = {
+        'Total BCV': data.bs_bcv,
+        'Total Paralelo': data.bs_paralelo,
+        'Diferencia Bs': data.diff_bs,
+        'Diferencia $': data.diff_usd
+    };
+
+    const key = (base === 'usd')  ? 'Total en $' : 'Total en Bs';
+
+    results[key] = values['Monto'] - data.diff_usd;
 
     return results;
 };
@@ -52,7 +93,7 @@ const createItemToListResultSm = (razon, monto) => {
 };
 
 const getDataReports = (values) => {
-    const results = calculos(values);
+    const results = calculos(values, calculadora['base'].value);
     const data = [
         Object.entries(values),
         Object.entries(results)
@@ -61,21 +102,40 @@ const getDataReports = (values) => {
     return data;
 };
 
-const addItemsToCloneTable = (values, locale, options, cloneReporteTabla) => {
+const addItemsToCloneTable = (values, locale, options, cloneReporteTabla, cloneResultadoMdLg) => {
     const data = getDataReports(values);
     let cont = 0;
 
-    data.forEach(element => {
-        element.forEach(item => {
-            if(cont == 0 || cont == 6 || cont == 7) {
-                cloneReporteTabla.cells[cont].textContent = transformToMoney(item[1], locale, options);
-            }
-            else {
-                cloneReporteTabla.cells[cont].textContent = transformToMoney(item[1]);
-            }
-            cont++;
+    if (calculadora['base'].value === 'usd') 
+    {
+        data.forEach(element => {
+            element.forEach(item => {
+                if(cont == 0 || cont == 6 || cont == 7) {
+                    cloneReporteTabla.cells[cont].textContent = transformToMoney(item[1], locale, options);
+                }
+                else {
+                    cloneReporteTabla.cells[cont].textContent = transformToMoney(item[1]);
+                }
+                cont++;
+            });
         });
-    });
+    } 
+    else 
+    {
+        data.forEach(element => {
+            element.forEach(item => {
+                cloneResultadoMdLg.cells[cont].textContent = item[0];
+
+                if(cont == 3 || cont == 4 || cont == 5) {
+                    cloneReporteTabla.cells[cont].textContent = transformToMoney(item[1], locale, options);
+                }
+                else {
+                    cloneReporteTabla.cells[cont].textContent = transformToMoney(item[1]);
+                }
+                cont++;
+            });
+        });
+    }
 
     return cloneReporteTabla;
 };
@@ -85,17 +145,34 @@ const addItemsToCloneList = (values, locale, options) => {
     const fragmentResultadoSm = document.createDocumentFragment();
     let cont = 0;
 
-    data.forEach(element => {
-        element.forEach(item => {
-            if(cont == 0 || cont == 6 || cont == 7) {
-                fragmentResultadoSm.appendChild(createItemToListResultSm(item[0], transformToMoney(item[1], locale, options)));
-            }
-            else {
-                fragmentResultadoSm.appendChild(createItemToListResultSm(item[0], transformToMoney(item[1])));
-            }
-            cont++;
+    if (calculadora['base'].value === 'usd') 
+    {
+        data.forEach(element => {
+            element.forEach(item => {
+                if(cont == 0 || cont == 6 || cont == 7) {
+                    fragmentResultadoSm.appendChild(createItemToListResultSm(item[0], transformToMoney(item[1], locale, options)));
+                }
+                else {
+                    fragmentResultadoSm.appendChild(createItemToListResultSm(item[0], transformToMoney(item[1])));
+                }
+                cont++;
+            });
         });
-    });
+    } 
+    else 
+    {
+        data.forEach(element => {
+            element.forEach(item => {
+                if(cont == 3 || cont == 4 || cont == 5) {
+                    fragmentResultadoSm.appendChild(createItemToListResultSm(item[0], transformToMoney(item[1], locale, options)));
+                }
+                else {
+                    fragmentResultadoSm.appendChild(createItemToListResultSm(item[0], transformToMoney(item[1])));
+                }
+                cont++;
+            });
+        });
+    }
 
     return fragmentResultadoSm;
 };
@@ -106,7 +183,7 @@ const printResultForRML = (values, locale, options) => {
     
     resultado.textContent = '';
 
-    cloneReporteTabla = addItemsToCloneTable(values, locale, options, cloneReporteTabla);
+    cloneReporteTabla = addItemsToCloneTable(values, locale, options, cloneReporteTabla, cloneResultadoMdLg.querySelector('table thead tr'));
 
     cloneResultadoMdLg.querySelector('table tbody').appendChild(cloneReporteTabla);
 
@@ -124,6 +201,45 @@ const printResultForRSM = (values, locale, options) => {
     resultado.appendChild(cloneResultadoSm);
 };
 
+const cargarTasa = (data) => {
+    const key = (data.fuente == 'oficial') ? 'bcv' : 'paralelo';
+
+    calculadora[key].value = parseFloat(data.promedio).toFixed(2);
+};
+
+const procesoFetch = async (url) => {
+    try 
+    {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        cargarTasa(data);
+    }
+    catch (error) 
+    {
+        console.log(error);
+    }
+};
+
+const fetchTasa = (url) => {
+    if(typeof url === 'string') 
+    {
+        procesoFetch(url);
+    }
+    else 
+    {
+        Object.values(url).forEach(element => {
+            procesoFetch(element);
+        });
+    }
+
+    calculadora['monto'].focus();
+};
+
+window.addEventListener('load', (e) => {
+    fetchTasa(urlTasas);
+});
+
 document.addEventListener('reset', (e) => {
     e.preventDefault();
 
@@ -138,9 +254,9 @@ document.addEventListener('submit', (e) => {
     if(e.target.id == calculadora.id) {
         //Capturar el valor de los campos
         const values = {
-            'Monto $': calculadora['monto'].value,
+            'Monto': calculadora['monto'].value,
             'BCV': calculadora['bcv'].value,
-            'Paralelo': calculadora['paralelo'].value,
+            'Paralelo': calculadora['paralelo'].value
         };
 
         //Definir el formato moneda

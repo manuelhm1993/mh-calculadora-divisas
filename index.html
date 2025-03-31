@@ -28,8 +28,20 @@
                             <input type="number" class="form-control" name="paralelo" id="paralelo" min="0" step="0.01" placeholder="Tasa paralelo" required>
                         </div>
                         <div class="mb-3"></label>
-                            <input type="number" class="form-control" name="monto" id="monto" min="0" step="0.01" placeholder="Monto en $" required>
+                            <input type="number" class="form-control" name="monto" id="monto" min="0" step="0.01" placeholder="Monto a calcular" required>
                         </div>
+
+                        <div class="mb-2 mh-bg text-dark">
+                            <input type="radio" name="base" id="usd" value="usd" checked>
+                            <label for="usd">
+                                Base $
+                            </label>
+                            <input type="radio" name="base" id="ves" value="ves">
+                            <label for="ves">
+                                Base Bs
+                            </label>
+                        </div>
+
                         <div class="d-grid gap-2">
                             <input type="submit" value="Calcular" id="calcular" class="text-uppercase btn btn-dark btn-sm">
                             <input type="reset" value="Resetear" id="resetear" class="text-uppercase btn btn-dark btn-sm">
@@ -49,20 +61,20 @@
             <h2 class="h4 text-uppercase text-center text-dark mt-3 fw-bold">Resultado</h2>
 
             <div class="table-responsive">
-                <table class="table">
+                <table class="table text-center">
                     <thead>
                         <tr class="bg-dark bg-gradient text-white">
                             <th>Monto $</th>
-                            <th>Tasa Bs BCV</th>
-                            <th>Tasa Bs Paralelo</th>
-                            <th>Monto Bs BCV</th>
-                            <th>Monto Bs Paralelo</th>
+                            <th>BCV</th>
+                            <th>Paralelo</th>
+                            <th>Monto BCV</th>
+                            <th>Monto Paralelo</th>
                             <th>Diferencia en Bs</th>
                             <th>Diferencia en $</th>
-                            <th>Total pagado en $</th>
+                            <th>Total en $</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-secondary bg-gradient text-white text-center">
+                    <tbody class="bg-secondary bg-gradient text-white">
                         
                     </tbody>
                 </table>
