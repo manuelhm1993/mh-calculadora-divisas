@@ -124,6 +124,31 @@ const printResultForRSM = (values, locale, options) => {
     resultado.appendChild(cloneResultadoSm);
 };
 
+const fetchTasa = async (url) => {
+    try 
+    {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        cargarTasa(data);
+    } 
+    catch (error) 
+    {
+        console.log(error);
+    }
+};
+
+const cargarTasa = (data) => {
+    const key = (data.fuente == 'oficial') ? 'bcv' : data.fuente;
+
+    calculadora[key].value = parseFloat(data.promedio).toFixed(2);
+};
+
+window.addEventListener('load', (e) => {
+    fetchTasa('https://ve.dolarapi.com/v1/dolares/oficial');
+    fetchTasa('https://ve.dolarapi.com/v1/dolares/paralelo');
+});
+
 document.addEventListener('reset', (e) => {
     e.preventDefault();
 
