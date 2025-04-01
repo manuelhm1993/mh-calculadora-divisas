@@ -15,9 +15,7 @@ const modal = new bootstrap.Modal('#selectModalUSD');
 
 //URL de la API https://dolarapi.com/docs/
 const urlTasasDolarApi = {
-    bcv: 'https://ve.dolarapi.com/v1/dolares/oficial',
-    paralelo: 'https://ve.dolarapi.com/v1/dolares/paralelo'
-    //binance: 'https://ve.dolarapi.com/v1/dolares/bitcoin'
+    bcv: 'https://ve.dolarapi.com/v1/dolares/oficial'
 };
 
 //URL de la API https://docs.pydolarve.org/
@@ -274,20 +272,30 @@ const fetchTasa = (url) => {
 };
 
 window.addEventListener('load', (e) => {
-    modal.toggle(modal);
+    modal.show();
 });
 
 document.addEventListener('click', (e) => {
     const click = e.target.id;
 
-    if(click == 'modal-paralelo' || click == 'modal-usdt')
+    if(click == 'modal-paralelo')
+    {
+        urlTasasDolarApi['paralelo'] = 'https://ve.dolarapi.com/v1/dolares/paralelo';
+        urlTasas = urlTasasDolarApi;
+    }
+    else if(click == 'modal-usdt')
+    {
+        urlTasasDolarApi['paralelo'] = 'https://ve.dolarapi.com/v1/dolares/bitcoin';
+        urlTasas = urlTasasDolarApi;
+    }
+    else
     {
         urlTasas = urlTasasPyDolarVe;
-
-        fetchTasa(urlTasas);
-
-        modal.toggle(modal);
     }
+
+    fetchTasa(urlTasas);
+
+    modal.hide();
 });
 
 document.addEventListener('reset', (e) => {
