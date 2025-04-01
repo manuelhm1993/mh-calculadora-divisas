@@ -30,10 +30,10 @@ const reset = (caller = 'resetear') => {
 
 const calcularUSD = (values) => {
     //Realizar los cálculos
-    const bs_bcv = values['Monto'] * values['BCV'];
-    const bs_paralelo = values['Monto'] * values['Paralelo'];
-    const diff_bs = bs_paralelo - bs_bcv;
-    const diff_usd = (values['Paralelo'] > 0) ? diff_bs / values['Paralelo'] : 0;
+    const bs_bcv = (values['Monto'] * values['BCV']).toFixed(2);
+    const bs_paralelo = (values['Monto'] * values['Paralelo']).toFixed(2);
+    const diff_bs = (bs_paralelo - bs_bcv).toFixed(2);
+    const diff_usd = (values['Paralelo'] > 0) ? (diff_bs / values['Paralelo']).toFixed(2) : 0;
 
     const results = {
         bs_bcv: bs_bcv,
@@ -47,10 +47,10 @@ const calcularUSD = (values) => {
 
 const calcularVES = (values) => {
     //Realizar los cálculos
-    const bs_bcv = values['Monto'] / values['BCV'];
-    const bs_paralelo = values['Monto'] / values['Paralelo'];
-    const diff_usd = bs_bcv - bs_paralelo;
-    const diff_bs = diff_usd * values['Paralelo'];
+    const bs_bcv = (values['Monto'] / values['BCV']).toFixed(2);
+    const bs_paralelo = (values['Monto'] / values['Paralelo']).toFixed(2);
+    const diff_usd = (bs_bcv - bs_paralelo).toFixed(2);
+    const diff_bs = (diff_usd * values['Paralelo']).toFixed(2);
 
     const results = {
         bs_bcv: bs_bcv,
@@ -73,13 +73,13 @@ const calculos = (values, base) => {
     if(base === 'usd') {
         results['Diferencia Bs'] = data.diff_bs;
         results['Diferencia $'] = data.diff_usd;
-        results['Total $'] = values['Monto'] - data.diff_usd;
+        results['Total $'] = (values['Monto'] - data.diff_usd).toFixed(2);
     }
     else 
     {
         results['Diferencia $'] = data.diff_usd;
         results['Diferencia Bs'] = data.diff_bs;
-        results['Total Bs'] = values['Monto'] - data.diff_bs;
+        results['Total Bs'] = (values['Monto'] - data.diff_bs).toFixed(2);
     }
 
     return results;
