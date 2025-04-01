@@ -10,12 +10,18 @@ const reporteTablaTemplate = document.querySelector('#reporte-tabla-template').c
 const resultadoTemplateSm = document.querySelector('#resultado-template-sm').content;
 const reporteListaTemplate = document.querySelector('#reporte-lista-template').content;
 
-//URL de la API dolarapi.com
-const urlTasas = {
+//URL de la API https://dolarapi.com/docs/
+const urlTasasDolarApi = {
     bcv: 'https://ve.dolarapi.com/v1/dolares/oficial',
     paralelo: 'https://ve.dolarapi.com/v1/dolares/paralelo'
     //binance: 'https://ve.dolarapi.com/v1/dolares/bitcoin'
 };
+
+//URL de la API https://docs.pydolarve.org/
+const urlTasasPyDolarVe = 'https://pydolarve.org/api/v1/dollar?format_date=default&rounded_price=true';
+
+//Asignar el API a utilizar
+const urlTasas = urlTasasPyDolarVe;
 
 const reset = (caller = 'resetear') => {
     calculadora['bcv'].value = '';
@@ -207,21 +213,41 @@ const printResultForRSM = (values, locale, options) => {
     resultado.appendChild(cloneResultadoSm);
 };
 
-const cargarTasa = (data) => {
-    const key = (data.fuente == 'oficial') ? 'bcv' : 'paralelo'; 
+const cargarTasa = (data, api) => {
+    if(api == 'dolarapi')
+    {
+        const key = (data.fuente == 'oficial') ? 'bcv' : 'paralelo';
 
-    calculadora[key].value = parseFloat(data.promedio).toFixed(2);
+        calculadora[key].value = parseFloat(data.promedio).toFixed(2);
+    }
+    else 
+    {
+        data = {
+            bcv: data.monitors.bcv.price,
+            paralelo: data.monitors.enparalelovzla.price
+        };
+
+        Object.entries(data).forEach(element => {
+            calculadora[element[0]].value = parseFloat(element[1]).toFixed(2);
+        });
+    }
+
+    console.log(api);
 };
 
-const procesoFetch = async (url) => {
+const procesoFetch = async (url, api = 'dolarapi') => {
     try 
     {
-        const res = await fetch(url);
+        const header = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+
+        const res = (api == 'dolarapi') ? await fetch(url) : await fetch(url, header);
         const data = await res.json();
 
-        console.log(data);
-
-        cargarTasa(data);
+        cargarTasa(data, api);
     }
     catch (error) 
     {
@@ -232,7 +258,7 @@ const procesoFetch = async (url) => {
 const fetchTasa = (url) => {
     if(typeof url === 'string') 
     {
-        procesoFetch(url);
+        procesoFetch(url, 'pydolarve');
     }
     else 
     {
