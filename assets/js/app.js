@@ -260,9 +260,9 @@ document.addEventListener('submit', (e) => {
     if(e.target.id == calculadora.id) {
         //Capturar el valor de los campos
         const values = {
-            'Monto': calculadora['monto'].value,
-            'BCV': calculadora['bcv'].value,
-            'Paralelo': calculadora['paralelo'].value
+            'Monto': parseFloat(calculadora['monto'].value).toFixed(2),
+            'BCV': parseFloat(calculadora['bcv'].value).toFixed(2),
+            'Paralelo': parseFloat(calculadora['paralelo'].value).toFixed(2)
         };
 
         //Definir el formato moneda
