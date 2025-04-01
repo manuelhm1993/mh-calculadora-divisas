@@ -10,6 +10,10 @@ const reporteTablaTemplate = document.querySelector('#reporte-tabla-template').c
 const resultadoTemplateSm = document.querySelector('#resultado-template-sm').content;
 const reporteListaTemplate = document.querySelector('#reporte-lista-template').content;
 
+//Modal de selección tipo dolar
+const selectModalUSD = document.querySelector('#selectModalUSD');
+const modal = new bootstrap.Modal(selectModalUSD);
+
 //URL de la API https://dolarapi.com/docs/
 const urlTasasDolarApi = {
     bcv: 'https://ve.dolarapi.com/v1/dolares/oficial',
@@ -21,7 +25,7 @@ const urlTasasDolarApi = {
 const urlTasasPyDolarVe = 'https://pydolarve.org/api/v1/dollar?format_date=default&rounded_price=true';
 
 //Asignar el API a utilizar
-const urlTasas = urlTasasPyDolarVe;
+let urlTasas = null;
 
 const reset = (caller = 'resetear') => {
     calculadora['bcv'].value = '';
@@ -271,7 +275,20 @@ const fetchTasa = (url) => {
 };
 
 window.addEventListener('load', (e) => {
-    fetchTasa(urlTasas);
+    modal.toggle(modal);
+});
+
+document.addEventListener('click', (e) => {
+    const click = e.target.id;
+
+    if(click == 'modal-paralelo' || click == 'modal-usdt')
+    {
+        urlTasas = urlTasasPyDolarVe;
+
+        fetchTasa(urlTasas);
+
+        modal.toggle(modal);
+    }
 });
 
 document.addEventListener('reset', (e) => {
