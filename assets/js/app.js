@@ -11,8 +11,7 @@ const resultadoTemplateSm = document.querySelector('#resultado-template-sm').con
 const reporteListaTemplate = document.querySelector('#reporte-lista-template').content;
 
 //Modal de selección tipo dolar
-const selectModalUSD = document.querySelector('#selectModalUSD');
-const modal = new bootstrap.Modal(selectModalUSD);
+const modal = new bootstrap.Modal('#selectModalUSD');
 
 //URL de la API https://dolarapi.com/docs/
 const urlTasasDolarApi = {
