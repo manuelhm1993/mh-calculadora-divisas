@@ -23,15 +23,16 @@ const urlTasasPyDolarVe = 'https://pydolarve.org/api/v1/dollar?format_date=defau
 //Asignar el API a utilizar
 const urlTasas = urlTasasPyDolarVe;
 
+//Permite consultar la API solo al cargar la página
+const tasasCache = {};
+
 const reset = (caller = 'resetear') => {
-    calculadora['bcv'].value = '';
-    calculadora['paralelo'].value = '';
+    calculadora['bcv'].value = tasasCache.bcv;
+    calculadora['paralelo'].value = tasasCache.paralelo;
     calculadora['monto'].value = '';
     calculadora['base'][0].checked = true;
 
     if(caller == 'resetear') resultado.textContent = '';
-
-    fetchTasa(urlTasas);
 };
 
 const calcularUSD = (values) => {
@@ -217,22 +218,23 @@ const cargarTasa = (data, api) => {
     if(api == 'dolarapi')
     {
         const key = (data.fuente == 'oficial') ? 'bcv' : 'paralelo';
+        const value = parseFloat(data.promedio).toFixed(2);
 
-        calculadora[key].value = parseFloat(data.promedio).toFixed(2);
+        tasasCache[key] = value;
+        calculadora[key].value = value;
     }
     else 
     {
-        data = {
-            bcv: data.monitors.bcv.price,
-            paralelo: data.monitors.enparalelovzla.price
-        };
+        tasasCache['bcv'] = data.monitors.bcv.price;
+        tasasCache['paralelo'] = data.monitors.enparalelovzla.price;
 
-        Object.entries(data).forEach(element => {
+        Object.entries(tasasCache).forEach(element => {
             calculadora[element[0]].value = parseFloat(element[1]).toFixed(2);
         });
     }
 
     console.log(api);
+    console.log(tasasCache);
 };
 
 const procesoFetch = async (url, api = 'dolarapi') => {
