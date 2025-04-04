@@ -1,3 +1,6 @@
+@import url("./../fontawesome-free-6.7.2-web/css/all.min.css");
+@import url("./../bootstrap-5.0.2-dist/css/bootstrap.min.css");
+
 body {
     background: rgb(225, 224, 224);
 }
