@@ -107,7 +107,7 @@ const transformToMoneyReverse = (formattedMoney, locale = "es-ve", currencySymbo
       ? cleanedString.replace(",", ".")  // Cambiar coma decimal por punto en Venezuela
       : cleanedString;  // Para formato US, ya está con punto decimal
     
-    return parseFloat(floatValue);  // Convertimos el string a número flotante
+    return floatValue.substr(1);  // Convertimos el string a número flotante
 };
 
 const createItemToListResultSm = (razon, monto) => {
@@ -372,13 +372,10 @@ document.addEventListener('click', (e) => {
                 'Paralelo': calculadora['paralelo'].value
             });
 
-            console.log(report);
-
             let datos = [];
             
             report.forEach(element => {
                 element.forEach(item => {
-                    console.log(item);
                     datos.push({tipo: item[0], valor: item[1]});
                 });
             });
