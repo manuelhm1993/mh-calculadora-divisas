@@ -107,6 +107,7 @@ const createItemToListResultSm = (razon, monto) => {
 
 const getDataReports = (values) => {
     const results = calculos(values, calculadora['base'].value);
+
     const data = [
         Object.entries(values),
         Object.entries(results)
@@ -309,5 +310,55 @@ document.addEventListener('submit', (e) => {
         }
 
         reset(e.target.id);
+    }
+});
+
+document.addEventListener('click', (e) => {
+    if(e.target.id == 'btnExportPDF')
+    {
+        const element = document.querySelector("#resultado");
+
+        html2canvas(element).then((canvas) => {
+            const imgData = canvas.toDataURL("image/png");
+            const pdf = new jspdf.jsPDF("p", "mm", "a4");
+            pdf.addImage(imgData, "PNG", 10, 10, 190, 0);
+            pdf.save("reporte-divisas.pdf");
+        });
+    }
+
+    if(e.target.id == 'btnExportExcel')
+    {
+        const screenWidth = window.innerWidth;
+
+        //Imprimir el reporte
+        if(screenWidth >= 800) {
+            const tabla = document.querySelector("#resultado");
+            const wb = XLSX.utils.table_to_book(tabla, {
+                sheet: "Divisas",
+            });
+            XLSX.writeFile(wb, "reporte-divisas.xlsx");
+        }
+        else {
+            const lista = document.querySelector("#resultado");
+            const report = getDataReports({
+                'Monto': calculadora['monto'].value,
+                'BCV': calculadora['bcv'].value,
+                'Paralelo': calculadora['paralelo'].value
+            });
+
+            let datos = [];
+
+            report.forEach(element => {
+                element.forEach(item => {
+                    console.log(item);
+                    datos.push({tipo: item[0], valor: item[1]});
+                });
+            });
+
+            const ws = XLSX.utils.json_to_sheet(datos);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Divisas");
+            XLSX.writeFile(wb, "reporte-divisas.xlsx");
+        }
     }
 });
