@@ -1,5 +1,6 @@
 const calculadora = document.querySelector('#calculadora');
 const resultado = document.querySelector('#resultado');
+let baseCalculo;
 
 //Templates
 //Resolución +800
@@ -27,6 +28,8 @@ const urlTasas = urlTasasDolarApi;
 const tasasCache = {};
 
 const reset = (caller = 'resetear') => {
+    baseCalculo = calculadora['base'][0].checked;
+
     calculadora['bcv'].value = tasasCache.bcv;
     calculadora['paralelo'].value = tasasCache.paralelo;
     calculadora['monto'].value = '';
@@ -94,6 +97,17 @@ const calculos = (values, base) => {
 
 const transformToMoney = (number, locale = "es-ve", options = { style: "currency", currency: "VES", maximumFractionDigits: 2 }) => {
     return new Intl.NumberFormat(locale, options).format(number);
+};
+
+const transformToMoneyReverse = (formattedMoney, locale = "es-ve", currencySymbol = "Bs.S") => {
+    // Elimina el símbolo de la moneda y los caracteres no numéricos
+    const cleanedString = formattedMoney.replace(new RegExp(`[^0-9${locale === "es-ve" ? ",." : ".,"}]`, "g"), "");
+    // Reemplaza la coma por punto (en formato Venezuela)
+    const floatValue = locale === "es-ve" 
+      ? cleanedString.replace(",", ".")  // Cambiar coma decimal por punto en Venezuela
+      : cleanedString;  // Para formato US, ya está con punto decimal
+    
+    return parseFloat(floatValue);  // Convertimos el string a número flotante
 };
 
 const createItemToListResultSm = (razon, monto) => {
@@ -313,6 +327,16 @@ document.addEventListener('submit', (e) => {
     }
 });
 
+function parseLocaleNumber(stringNumber, locale) {
+    var thousandSeparator = Intl.NumberFormat(locale).format(11111).replace(/\p{Number}/gu, '');
+    var decimalSeparator = Intl.NumberFormat(locale).format(1.1).replace(/\p{Number}/gu, '');
+
+    return parseFloat(stringNumber
+        .replace(new RegExp('\\' + thousandSeparator, 'g'), '')
+        .replace(new RegExp('\\' + decimalSeparator), '.')
+    );
+}
+
 document.addEventListener('click', (e) => {
     if(e.target.id == 'btnExportPDF')
     {
@@ -339,15 +363,19 @@ document.addEventListener('click', (e) => {
             XLSX.writeFile(wb, "reporte-divisas.xlsx");
         }
         else {
-            const lista = document.querySelector("#resultado");
+            const lista = document.querySelector("#resultado .card .list-group div small");
+            const monto = (baseCalculo) ? transformToMoneyReverse(lista.textContent, "en-US", "$") : transformToMoneyReverse(lista.textContent)
+
             const report = getDataReports({
-                'Monto': calculadora['monto'].value,
+                'Monto': monto,
                 'BCV': calculadora['bcv'].value,
                 'Paralelo': calculadora['paralelo'].value
             });
 
-            let datos = [];
+            console.log(report);
 
+            let datos = [];
+            
             report.forEach(element => {
                 element.forEach(item => {
                     console.log(item);
