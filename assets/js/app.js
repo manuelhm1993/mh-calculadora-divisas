@@ -1,5 +1,6 @@
 const calculadora = document.querySelector('#calculadora');
 const resultado = document.querySelector('#resultado');
+let baseCalculo;
 
 //Templates
 //Resolución +800
@@ -27,6 +28,8 @@ const urlTasas = urlTasasDolarApi;
 const tasasCache = {};
 
 const reset = (caller = 'resetear') => {
+    baseCalculo = calculadora['base'][0].checked;
+
     calculadora['bcv'].value = tasasCache.bcv;
     calculadora['paralelo'].value = tasasCache.paralelo;
     calculadora['monto'].value = '';
@@ -96,6 +99,17 @@ const transformToMoney = (number, locale = "es-ve", options = { style: "currency
     return new Intl.NumberFormat(locale, options).format(number);
 };
 
+const transformToMoneyReverse = (formattedMoney, locale = "es-ve", currencySymbol = "Bs.S") => {
+    // Elimina el símbolo de la moneda y los caracteres no numéricos
+    const cleanedString = formattedMoney.replace(new RegExp(`[^0-9${locale === "es-ve" ? ",." : ".,"}]`, "g"), "");
+    // Reemplaza la coma por punto (en formato Venezuela)
+    const floatValue = locale === "es-ve" 
+      ? cleanedString.replace(",", ".")  // Cambiar coma decimal por punto en Venezuela
+      : cleanedString;  // Para formato US, ya está con punto decimal
+
+    return (baseCalculo) ? floatValue : floatValue.substr(1);  // Convertimos el string a número flotante
+};
+
 const createItemToListResultSm = (razon, monto) => {
     const cloneReporteLista = reporteListaTemplate.firstElementChild.cloneNode(true);
 
@@ -107,6 +121,7 @@ const createItemToListResultSm = (razon, monto) => {
 
 const getDataReports = (values) => {
     const results = calculos(values, calculadora['base'].value);
+
     const data = [
         Object.entries(values),
         Object.entries(results)
@@ -309,5 +324,67 @@ document.addEventListener('submit', (e) => {
         }
 
         reset(e.target.id);
+    }
+});
+
+function parseLocaleNumber(stringNumber, locale) {
+    var thousandSeparator = Intl.NumberFormat(locale).format(11111).replace(/\p{Number}/gu, '');
+    var decimalSeparator = Intl.NumberFormat(locale).format(1.1).replace(/\p{Number}/gu, '');
+
+    return parseFloat(stringNumber
+        .replace(new RegExp('\\' + thousandSeparator, 'g'), '')
+        .replace(new RegExp('\\' + decimalSeparator), '.')
+    );
+}
+
+document.addEventListener('click', (e) => {
+    if(e.target.id == 'btnExportPDF')
+    {
+        const element = document.querySelector("#resultado");
+
+        html2canvas(element).then((canvas) => {
+            const imgData = canvas.toDataURL("image/png");
+            const pdf = new jspdf.jsPDF("p", "mm", "a4");
+            pdf.addImage(imgData, "PNG", 10, 10, 190, 0);
+            pdf.save("reporte-divisas.pdf");
+        });
+    }
+
+    if(e.target.id == 'btnExportExcel')
+    {
+        const screenWidth = window.innerWidth;
+
+        //Imprimir el reporte
+        if(screenWidth >= 800) {
+            const tabla = document.querySelector("#resultado table");
+            console.log(tabla);
+            const wb = XLSX.utils.table_to_book(tabla, {
+                sheet: "Divisas",
+            });
+            XLSX.writeFile(wb, "reporte-divisas.xlsx");
+        }
+        else {
+            const lista = document.querySelector("#resultado .card .list-group div small");
+            const monto = (baseCalculo) ? transformToMoneyReverse(lista.textContent, "en-US", "$") : transformToMoneyReverse(lista.textContent)
+
+            const report = getDataReports({
+                'Monto': monto,
+                'BCV': calculadora['bcv'].value,
+                'Paralelo': calculadora['paralelo'].value
+            });
+
+            let datos = [];
+            
+            report.forEach(element => {
+                element.forEach(item => {
+                    datos.push({tipo: item[0], valor: item[1]});
+                });
+            });
+
+            const ws = XLSX.utils.json_to_sheet(datos);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Divisas");
+            XLSX.writeFile(wb, "reporte-divisas.xlsx");
+        }
     }
 });
