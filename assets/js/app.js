@@ -22,7 +22,7 @@ const urlTasasDolarApi = {
 const urlTasasPyDolarVe = 'https://pydolarve.org/api/v1/dollar?format_date=default&rounded_price=true';
 
 //Asignar el API a utilizar
-const urlTasas = urlTasasDolarApi;
+const urlTasas = urlTasasPyDolarVe;
 
 //Permite consultar la API solo al cargar la página
 const tasasCache = {};
