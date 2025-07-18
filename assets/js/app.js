@@ -20,9 +20,13 @@ const urlTasasDolarApi = {
 
 //URL de la API https://docs.pydolarve.org/
 const urlTasasPyDolarVe = 'https://pydolarve.org/api/v1/dollar?format_date=default&rounded_price=true';
+const urlTasasPyDolarVeBinance = {
+    bcv: 'https://pydolarve.org/api/v2/dollar',
+    paralelo: 'https://pydolarve.org/api/v2/dollar?page=binance'
+};
 
 //Asignar el API a utilizar
-const urlTasas = urlTasasDolarApi;
+const urlTasas = urlTasasPyDolarVeBinance;
 
 //Permite consultar la API solo al cargar la página
 const tasasCache = {};
@@ -252,6 +256,25 @@ const cargarTasa = (data, api) => {
     console.log(tasasCache);
 };
 
+const cargarTasa2 = (data, api) => {
+    console.log(api);
+    console.log(data);
+    console.log(tasasCache);
+
+    if(data.monitors.bcv)
+    {
+        tasasCache['bcv'] = data.monitors.bcv.price;
+    }
+    else
+    {
+        tasasCache['paralelo'] = data.monitors.binance.price;
+    }
+
+    Object.entries(tasasCache).forEach(element => {
+        calculadora[element[0]].value = parseFloat(element[1]).toFixed(2);
+    });
+};
+
 const procesoFetch = async (url, api = 'dolarapi') => {
     try 
     {
@@ -264,7 +287,7 @@ const procesoFetch = async (url, api = 'dolarapi') => {
         const res = (api == 'dolarapi') ? await fetch(url) : await fetch(url, header);
         const data = await res.json();
 
-        cargarTasa(data, api);
+        cargarTasa2(data, api);
     }
     catch (error) 
     {
